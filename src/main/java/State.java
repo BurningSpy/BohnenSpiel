@@ -1,5 +1,3 @@
-package properties;
-
 import java.util.Arrays;
 
 public class State {
