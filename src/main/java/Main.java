@@ -20,9 +20,9 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
     // System.out.println(load(server));
-    // createGame();
-    // openGames();
-    // joinGame("0");
+    createGame();
+    openGames();
+    joinGame("0");
   }
 
   static void createGame() throws Exception {
@@ -93,7 +93,7 @@ public class Main {
         int selectField;
         // System.out.println("Finde Zahl: ");
         do {
-          selectField = (int) (Math.random() * 6) + offset;
+          selectField = AiLogic.chooseTurn();
           // System.out.println("\t-> " + selectField );
         } while (board[selectField] == 0);
 
@@ -132,7 +132,7 @@ public class Main {
           p2 += board[field];
         }
         board[field] = 0;
-        field = (field == 0) ? field = 11 : --field;
+        field = (field == 0) ? 11 : --field;
       } while (board[field] == 2 || board[field] == 4 || board[field] == 6);
     }
     return board;
