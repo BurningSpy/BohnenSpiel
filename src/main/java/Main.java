@@ -20,9 +20,9 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
     // System.out.println(load(server));
-    createGame();
-    openGames();
-    joinGame("0");
+    // createGame();
+    // openGames();
+    // joinGame("0");
   }
 
   static void createGame() throws Exception {
