@@ -5,16 +5,24 @@ import java.net.URI;
 public class Main {
   // static String server = "http://127.0.0.1:5000";
   static String server = "http://bohnenspiel.informatik.uni-mannheim.de";
-  static String name = "random-AI";
+
+  /*
+   Bonjwa:
+    Seine Ursprünge liegen im asiatischen Raum. Insbesondere der Buddhismus prägte diesen Begriff.
+    So kann sich eine Person laut der Religion einen Bonjwa nennen,
+    wenn diese eine bestimmte Stufe der Selbsterkenntnis erreicht hat.
+    Im modernen Zeitalter wird dieser Ausdruck in Korea für bemerkenswerte Leistungen verwendet[...]
+  */
+  static String name = "Bohnjwa";
 
   static int p1 = 0;
   static int p2 = 0;
 
   public static void main(String[] args) throws Exception {
     // System.out.println(load(server));
-    //createGame();
+    // createGame();
     // openGames();
-     //joinGame("0");
+    // joinGame("0");
   }
 
   static void createGame() throws Exception {
