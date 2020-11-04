@@ -12,6 +12,12 @@ public class AiLogic {
 
   // minmax with alpha-beta-pruning
   public static int minimax() {
+
+
+
+
+
+
     return 0;
   }
 

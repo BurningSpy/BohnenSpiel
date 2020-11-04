@@ -15,18 +15,32 @@ public class State {
   }
 
   // Kopierkonstruktor
-  public State(State state) {}
+  public State(State state) {
+    this.spielfeld = Arrays.copyOf(state.spielfeld, 12);
+    this.punkteBlau = state.punkteBlau;
+    this.punkteRot = state.punkteRot;
+    this.redsTurn = state.redsTurn;
+  }
 
   // Move durchspielen
-  public static void doMove(int field) {}
+  public void doMove(int field) {
+    // berechne neue Struktur von this
+    // calcHeuristic()
+  }
 
   // Find Neighbor/expand
-  public static void expand() {
-
+  public void expand() {
+    // alle möglichen Züge hier
+    State possibleState = new State(this);
+    possibleState.doMove(1);
+    // someLinkedList.add(possibleStates)
   }
 
   /** Heuristik berechnen */
-  public static void calcHeuristic() {}
+  public void calcHeuristic() {
+    // berechnen, blablabla
+    // this.heuristik = value
+  }
 
   @Override
   public boolean equals(Object o) {
