@@ -82,7 +82,7 @@ public class Main {
     }
 
     while (true) {
-      Thread.sleep(1000);
+      Thread.sleep(100);
       int moveState = Integer.parseInt(load(checkURL));
       int stateID = Integer.parseInt(load(stateIdURL));
       if (stateID != 2 && ((start <= moveState && moveState <= end) || moveState == -1)) {

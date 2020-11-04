@@ -1,8 +1,9 @@
 import java.util.Arrays;
+import java.util.Date;
 
 public class State {
   int[] spielfeld;
-  int punkteRot, punkteBlau;
+  int punkteRot, punkteBlau, heuristik;
   boolean redsTurn;
 
   public State() {
@@ -10,15 +11,22 @@ public class State {
     Arrays.fill(this.spielfeld, 6);
     this.punkteBlau = this.punkteRot = 0;
     this.redsTurn = true;
+    calcHeuristic();
   }
 
   // Kopierkonstruktor
+  public State(State state) {}
 
   // Move durchspielen
+  public static void doMove(int field) {}
 
   // Find Neighbor/expand
+  public static void expand() {
 
-  // Heuristik berechnen
+  }
+
+  /** Heuristik berechnen */
+  public static void calcHeuristic() {}
 
   @Override
   public boolean equals(Object o) {
