@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.HashMap;
 
 public class Main {
   // static String server = "http://127.0.0.1:5000";
@@ -17,6 +18,8 @@ public class Main {
 
   static int p1 = 0;
   static int p2 = 0;
+
+  static HashMap<Integer, State> calculatedStates = new HashMap<>();
 
   public static void main(String[] args) throws Exception {
     // System.out.println(load(server));

@@ -12,6 +12,14 @@ public class State {
     this.redsTurn = true;
   }
 
+  // Kopierkonstruktor
+
+  // Move durchspielen
+
+  // Find Neighbor/expand
+
+  // Heuristik berechnen
+
   @Override
   public boolean equals(Object o) {
     if (this.getClass() != o.getClass()) {
