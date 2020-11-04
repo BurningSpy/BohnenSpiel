@@ -12,9 +12,9 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
     // System.out.println(load(server));
-    createGame();
+    //createGame();
     // openGames();
-    // joinGame("0");
+     //joinGame("0");
   }
 
   static void createGame() throws Exception {
@@ -78,7 +78,7 @@ public class Main {
         if (moveState != -1) {
           int selectedField = moveState - 1;
           board = updateBoard(board, selectedField);
-          System.out.println("Gegner wï¿½hlte: " + moveState + " /\t" + p1 + " - " + p2);
+          System.out.println("Gegner waehlte: " + moveState + " /\t" + p1 + " - " + p2);
           System.out.println(printBoard(board) + "\n");
         }
         // calculate fieldID
@@ -90,7 +90,7 @@ public class Main {
         } while (board[selectField] == 0);
 
         board = updateBoard(board, selectField);
-        System.out.println("Wï¿½hle Feld: " + (selectField + 1) + " /\t" + p1 + " - " + p2);
+        System.out.println("Waehle Feld: " + (selectField + 1) + " /\t" + p1 + " - " + p2);
         System.out.println(printBoard(board) + "\n\n");
 
         move(gameID, selectField + 1);
