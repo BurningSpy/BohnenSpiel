@@ -80,6 +80,7 @@ public class Main {
       start = 1;
       end = 6;
     }
+    State currentState = new State();
 
     while (true) {
       Thread.sleep(100);
@@ -96,7 +97,7 @@ public class Main {
         int selectField;
         // System.out.println("Finde Zahl: ");
         do {
-          selectField = AiLogic.chooseTurn();
+          selectField = AiLogic.chooseTurn(currentState);
           // System.out.println("\t-> " + selectField );
         } while (board[selectField] == 0);
 

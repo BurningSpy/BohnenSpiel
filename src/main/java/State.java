@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.Date;
+import java.util.LinkedList;
 
 public class State {
   int[] spielfeld;
@@ -29,11 +30,12 @@ public class State {
   }
 
   // Find Neighbor/expand
-  public void expand() {
+  public LinkedList<State> expand() {
     // alle möglichen Züge hier
     State possibleState = new State(this);
     possibleState.doMove(1);
     // someLinkedList.add(possibleStates)
+    return new LinkedList<>();
   }
 
   /** Heuristik berechnen */

@@ -1,9 +1,11 @@
 import java.util.Date;
+import java.util.LinkedList;
 
 public class AiLogic {
 
-  public static int chooseTurn() {
+  public static int chooseTurn(State state) {
     Date start = new Date();
+    LinkedList<State> newStates = state.expand();
     int turnToPlay = minimax();
 
     System.out.println(new Date().getTime() - start.getTime());
