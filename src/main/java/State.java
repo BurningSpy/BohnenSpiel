@@ -27,13 +27,26 @@ public class State {
   public void doMove(int field) {
     int index;
     int hilfe = this.spielfeld[field];
+    boolean test= true; 
     this.spielfeld[field] = 0; 
     for (int i=0; i<hilfe; i++){
       index = (field+i) % 12;
       this.spielfeld[index] = this.spielfeld[index] + 1;
     }
     while(test){
-      if(
+      index = (field + hilfe) % 12;
+      if(this.spielfeld[index]== 2 || this.spielfeld[index]== 4 || this.spielfeld[index]==6){
+        if (this.redsTurn){
+          this.punkteRot == this.punkteRot + this.spielfeld[index];
+        }else{
+          this.punkteBlau == this.punkteRot + this.spielfeld[index];
+        }
+        hilfe = hilfe - 1;
+      }else{
+        test = false;
+      }
+    }
+          
       
       
     // calcHeuristic()
