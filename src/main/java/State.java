@@ -25,7 +25,17 @@ public class State {
 
   // Move durchspielen
   public void doMove(int field) {
-    // berechne neue Struktur von this
+    int index;
+    int hilfe = this.spielfeld[field];
+    this.spielfeld[field] = 0; 
+    for (int i=0; i<hilfe; i++){
+      index = (field+i) % 12;
+      this.spielfeld[index] = this.spielfeld[index] + 1;
+    }
+    while(test){
+      if(
+      
+      
     // calcHeuristic()
   }
 
