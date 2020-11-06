@@ -21,6 +21,7 @@ public class State {
     this.punkteBlau = state.punkteBlau;
     this.punkteRot = state.punkteRot;
     this.redsTurn = state.redsTurn;
+    this.heuristik = state.heuristik;
   }
 
   // Move durchspielen
@@ -37,28 +38,51 @@ public class State {
       index = (field + hilfe) % 12;
       if(this.spielfeld[index]== 2 || this.spielfeld[index]== 4 || this.spielfeld[index]==6){
         if (this.redsTurn){
-          this.punkteRot == this.punkteRot + this.spielfeld[index];
+          this.punkteRot = this.punkteRot + this.spielfeld[index];
         }else{
-          this.punkteBlau == this.punkteRot + this.spielfeld[index];
+          this.punkteBlau = this.punkteRot + this.spielfeld[index];
         }
         hilfe = hilfe - 1;
       }else{
         test = false;
       }
     }
-          
-      
-      
-    // calcHeuristic()
+    calcHeuristic();
   }
 
-  // Find Neighbor/expand
-  public LinkedList<State> expand() {
-    // alle möglichen Züge hier
-    State possibleState = new State(this);
-    possibleState.doMove(1);
-    // someLinkedList.add(possibleStates)
-    return new LinkedList<>();
+  // Find Neighbor/expand (list all next states)
+  public LinkedList<State> expand(State s) {
+    int start, end;
+    LinkedList<State> possibleStates = new LinkedList<>();
+
+    // determine iteration starting point
+    if(!s.redsTurn){
+      start = 0;
+      end = 5;
+    }else{
+      start = 6;
+      end = 11;
+    }
+    //iterate over all of one player's possible moves
+    for(int i = start; i <= end; i++){
+      if(s.spielfeld[i] != 0){
+        State nextState = new State(s); //
+        nextState = calcNextState(nextState, i);
+        if(nextState != null){
+          possibleStates.add(nextState);
+        }
+      }
+    }
+    return possibleStates;
+  }
+
+  private State calcNextState(State state, Integer move){
+    if(state.spielfeld[move] != 0){
+      state.doMove(move);
+      return state;
+    }else{
+      return null;
+    }
   }
 
   /** Heuristik berechnen */

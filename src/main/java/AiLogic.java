@@ -5,7 +5,7 @@ public class AiLogic {
 
   public static int chooseTurn(State state) {
     Date start = new Date();
-    LinkedList<State> newStates = state.expand();
+    LinkedList<State> newStates = state.expand(state);
     int turnToPlay = minimax();
 
     System.out.println(new Date().getTime() - start.getTime());
