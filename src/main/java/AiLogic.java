@@ -2,7 +2,7 @@ import java.util.Date;
 
 public class AiLogic {
   // change values here to make AI better-slower/worse-faster
-  static int maxDepth = 6;
+  static int maxDepth = 10;
 
   public static int chooseTurn(State state) {
     Date start = new Date();
@@ -38,7 +38,7 @@ public class AiLogic {
       for (State s : state.children) {
         int value = minimax(s, depth + 1, alpha, beta);
         bestValue = Math.min(bestValue, value);
-        alpha = Math.min(beta, bestValue);
+        beta = Math.min(beta, bestValue);
         if (beta <= alpha) {
           break;
         }
@@ -51,4 +51,9 @@ public class AiLogic {
 
   // logic for early game
 
+  public static void main(String[] args) {
+    State test = new State();
+    int turn = chooseTurn(test);
+    System.out.println(turn);
+  }
 }
