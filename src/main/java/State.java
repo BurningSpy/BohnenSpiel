@@ -1,10 +1,9 @@
 import java.util.Arrays;
-import java.util.Date;
 import java.util.LinkedList;
 
 public class State {
   int[] spielfeld;
-  int punkteRot, punkteBlau, heuristik;
+  int punkteRot, punkteBlau, heuristik, turn;
   boolean redsTurn;
   State prev;
   LinkedList<State> children = new LinkedList<>();
@@ -72,6 +71,7 @@ public class State {
         nextState = calcNextState(nextState, i);
         if (nextState != null) {
           nextState.prev = this;
+          nextState.turn = i;
           possibleStates.add(nextState);
         }
       }
@@ -90,8 +90,7 @@ public class State {
 
   /** Heuristik berechnen */
   public void calcHeuristic() {
-    // berechnen, blablabla
-    // this.heuristik = value
+    this.heuristik = this.punkteBlau + this.punkteRot;
   }
 
   @Override

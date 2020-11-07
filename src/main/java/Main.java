@@ -14,7 +14,7 @@ public class Main {
     wenn diese eine bestimmte Stufe der Selbsterkenntnis erreicht hat.
     Im modernen Zeitalter wird dieser Ausdruck in Korea für bemerkenswerte Leistungen verwendet[...]
   */
-  static String name = "Bohnjwa";
+  static String name = "Mr. Anderson";
 
   static int p1 = 0;
   static int p2 = 0;
@@ -25,7 +25,9 @@ public class Main {
     // System.out.println(load(server));
     // createGame();
     // openGames();
-    // joinGame("0");
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    String s = br.readLine();
+    joinGame(s);
   }
 
   static void createGame() throws Exception {
@@ -81,6 +83,7 @@ public class Main {
       end = 6;
     }
     State currentState = new State();
+    currentState.redsTurn = offset == 0;
 
     while (true) {
       Thread.sleep(100);
@@ -90,6 +93,11 @@ public class Main {
         if (moveState != -1) {
           int selectedField = moveState - 1;
           board = updateBoard(board, selectedField);
+          currentState = new State();
+          currentState.spielfeld = board;
+          currentState.punkteRot = p1;
+          currentState.punkteBlau = p2;
+          currentState.calcHeuristic();
           System.out.println("Gegner waehlte: " + moveState + " /\t" + p1 + " - " + p2);
           System.out.println(printBoard(board) + "\n");
         }
