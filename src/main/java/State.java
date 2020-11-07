@@ -6,6 +6,8 @@ public class State {
   int[] spielfeld;
   int punkteRot, punkteBlau, heuristik;
   boolean redsTurn;
+  State prev;
+  LinkedList<State> children = new LinkedList<>();
 
   public State() {
     this.spielfeld = new int[12];
@@ -28,22 +30,22 @@ public class State {
   public void doMove(int field) {
     int index;
     int hilfe = this.spielfeld[field];
-    boolean test= true; 
-    this.spielfeld[field] = 0; 
-    for (int i=0; i<hilfe; i++){
-      index = (field+i) % 12;
+    boolean test = true;
+    this.spielfeld[field] = 0;
+    for (int i = 0; i < hilfe; i++) {
+      index = (field + i) % 12;
       this.spielfeld[index] = this.spielfeld[index] + 1;
     }
-    while(test){
+    while (test) {
       index = (field + hilfe) % 12;
-      if(this.spielfeld[index]== 2 || this.spielfeld[index]== 4 || this.spielfeld[index]==6){
-        if (this.redsTurn){
+      if (this.spielfeld[index] == 2 || this.spielfeld[index] == 4 || this.spielfeld[index] == 6) {
+        if (this.redsTurn) {
           this.punkteRot = this.punkteRot + this.spielfeld[index];
-        }else{
+        } else {
           this.punkteBlau = this.punkteRot + this.spielfeld[index];
         }
         hilfe = hilfe - 1;
-      }else{
+      } else {
         test = false;
       }
     }
@@ -51,36 +53,37 @@ public class State {
   }
 
   // Find Neighbor/expand (list all next states)
-  public LinkedList<State> expand(State s) {
+  public void expand() {
     int start, end;
     LinkedList<State> possibleStates = new LinkedList<>();
 
     // determine iteration starting point
-    if(!s.redsTurn){
+    if (!this.redsTurn) {
       start = 0;
       end = 5;
-    }else{
+    } else {
       start = 6;
       end = 11;
     }
-    //iterate over all of one player's possible moves
-    for(int i = start; i <= end; i++){
-      if(s.spielfeld[i] != 0){
-        State nextState = new State(s); //
+    // iterate over all of one player's possible moves
+    for (int i = start; i <= end; i++) {
+      if (this.spielfeld[i] != 0) {
+        State nextState = new State(this); //
         nextState = calcNextState(nextState, i);
-        if(nextState != null){
+        if (nextState != null) {
+          nextState.prev = this;
           possibleStates.add(nextState);
         }
       }
     }
-    return possibleStates;
+    this.children = possibleStates;
   }
 
-  private State calcNextState(State state, Integer move){
-    if(state.spielfeld[move] != 0){
+  private State calcNextState(State state, Integer move) {
+    if (state.spielfeld[move] != 0) {
       state.doMove(move);
       return state;
-    }else{
+    } else {
       return null;
     }
   }
