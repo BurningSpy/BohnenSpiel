@@ -1,11 +1,13 @@
 import java.util.Date;
+import java.util.HashMap;
 
 public class AiLogic {
   // change values here to make AI better-slower/worse-faster
-  static int maxDepth = 12;
+  static int maxDepth = 18;
 
   // Don't change anything here
   static int bestTurn;
+  static HashMap<Integer, State> calculatedStates = new HashMap<>();
 
   public static int chooseTurn(State state) {
     bestTurn = 0;
@@ -20,11 +22,21 @@ public class AiLogic {
   // minimax with alpha-beta-pruning
   public static int minimax(State state, int depth, double alpha, double beta) {
     if (depth >= maxDepth) {
-      return state.heuristik;
+      return state.heuristic;
     }
     // even depth means MaxPlayer
     double bestValue;
-    state.expand();
+    State help = calculatedStates.get(state.hashCode());
+    if (help == null) {
+      state.expand();
+    } else {
+      state = help;
+    }
+    /* if this is true then we have no possible move on this state and the game would end
+    if (state.children.size() == 0) {
+      return state.heuristic;
+    }
+     */
     if (depth % 2 == 0) {
       bestValue = Double.NEGATIVE_INFINITY;
       for (int i = 0; i < state.children.size(); i++) {

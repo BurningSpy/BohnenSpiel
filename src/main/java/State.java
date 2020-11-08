@@ -2,53 +2,57 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 public class State {
-  int[] spielfeld;
-  int punkteRot, punkteBlau, heuristik, turn;
+  int[] field;
+  int redPoints, bluePoints, heuristic, turn, depth;
   boolean redsTurn;
   State prev;
   LinkedList<State> children = new LinkedList<>();
 
   public State() {
-    this.spielfeld = new int[12];
-    Arrays.fill(this.spielfeld, 6);
-    this.punkteBlau = this.punkteRot = 0;
+    this.field = new int[12];
+    Arrays.fill(this.field, 6);
+    this.bluePoints = this.redPoints = 0;
     this.redsTurn = true;
+    this.depth = 0;
     calcHeuristic();
   }
 
   // Kopierkonstruktor
   public State(State state) {
-    this.spielfeld = Arrays.copyOf(state.spielfeld, 12);
-    this.punkteBlau = state.punkteBlau;
-    this.punkteRot = state.punkteRot;
+    this.field = Arrays.copyOf(state.field, 12);
+    this.bluePoints = state.bluePoints;
+    this.redPoints = state.redPoints;
     this.redsTurn = state.redsTurn;
-    this.heuristik = state.heuristik;
+    this.heuristic = state.heuristic;
+    this.depth = state.depth + 1;
   }
 
   // Move durchspielen
   public void doMove(int field) {
     int index;
-    int hilfe = this.spielfeld[field];
-    boolean test = true;
-    this.spielfeld[field] = 0;
-    for (int i = 0; i < hilfe; i++) {
+    int capturedBeans = this.field[field];
+    this.field[field] = 0;
+    for (int i = 0; i < capturedBeans; i++) {
       index = (field + i) % 12;
-      this.spielfeld[index] = this.spielfeld[index] + 1;
+      this.field[index]++;
     }
-    while (test) {
-      index = (field + hilfe) % 12;
-      if (this.spielfeld[index] == 2 || this.spielfeld[index] == 4 || this.spielfeld[index] == 6) {
+    while (true) {
+      index = (field + capturedBeans) % 12;
+      if (this.field[index] == 2 || this.field[index] == 4 || this.field[index] == 6) {
         if (this.redsTurn) {
-          this.punkteRot = this.punkteRot + this.spielfeld[index];
+          this.redPoints = this.redPoints + this.field[index];
         } else {
-          this.punkteBlau = this.punkteRot + this.spielfeld[index];
+          this.bluePoints = this.redPoints + this.field[index];
         }
-        hilfe = hilfe - 1;
+        this.field[index] = 0;
+        capturedBeans--;
       } else {
-        test = false;
+        break;
       }
     }
-    calcHeuristic();
+    if (this.depth >= AiLogic.maxDepth) {
+      calcHeuristic();
+    }
   }
 
   // Find Neighbor/expand (list all next states)
@@ -66,7 +70,7 @@ public class State {
     }
     // iterate over all of one player's possible moves
     for (int i = start; i <= end; i++) {
-      if (this.spielfeld[i] != 0) {
+      if (this.field[i] != 0) {
         State nextState = new State(this); //
         nextState = calcNextState(nextState, i);
         if (nextState != null) {
@@ -76,11 +80,16 @@ public class State {
         }
       }
     }
+    // bohnen vom gegner neu auf seine punkte berechnen und heuristik updaten
+    if (this.children.size() == 0) {
+      // this.heuristic = -1000;
+    }
     this.children = possibleStates;
+    AiLogic.calculatedStates.put(this.hashCode(), this);
   }
 
   private State calcNextState(State state, Integer move) {
-    if (state.spielfeld[move] != 0) {
+    if (state.field[move] != 0) {
       state.doMove(move);
       return state;
     } else {
@@ -90,7 +99,11 @@ public class State {
 
   /** Heuristik berechnen */
   public void calcHeuristic() {
-    this.heuristik = this.punkteBlau + this.punkteRot;
+    this.heuristic = this.bluePoints - this.redPoints;
+    /**
+     * - Punkte abziehen fuer Felder mit 1,3,5 nach Zug - quadratische Varianz der Bohnen in eigenen
+     * Feldern nach Zug - Anzahl eigener moeglichen Zuege
+     */
   }
 
   @Override
@@ -100,27 +113,38 @@ public class State {
     }
     State otherState = (State) o;
     if (this.redsTurn == otherState.redsTurn
-        && this.punkteBlau == otherState.punkteBlau
-        && this.punkteRot == otherState.punkteRot) {
-      for (int i = 0; i < this.spielfeld.length; i++) {
-        if (this.spielfeld[i] != otherState.spielfeld[i]) {
-          return false;
-        }
-      }
+        && this.bluePoints == otherState.bluePoints
+        && this.redPoints == otherState.redPoints) {
+      return Arrays.equals(this.field, otherState.field);
     } else {
       return false;
     }
-    return true;
   }
 
-  // multiplizieren die einzelnen Werte des Spielzustandes mit Primzahlen, um bei
-  // unterschiedlichen States möglichst unterschiedliche hashcodes zu bekommen
   @Override
   public int hashCode() {
-    int result = (this.redsTurn ? 1 : 0) + this.punkteBlau << 1 + this.punkteRot << 3;
-    for (int i = 0; i < this.spielfeld.length; i++) {
-      result += this.spielfeld[i] << 2 * i + 5;
+    int result = (this.redsTurn ? 1 : 0) + this.bluePoints << 1 + this.redPoints << 3;
+    for (int i = 0; i < this.field.length; i++) {
+      result += this.field[i] << 2 * i + 5;
     }
     return result;
+  }
+
+  public static void main(String[] args) {
+    State s = new State();
+    s.redsTurn = true;
+    s.field[0] = 1;
+    s.field[1] = 1;
+    s.field[2] = 1;
+    s.field[3] = 1;
+    s.field[4] = 1;
+    s.field[5] = 3;
+    s.field[6] = 1;
+    s.field[7] = 1;
+    s.field[8] = 3;
+    s.field[9] = 14;
+    s.field[10] = 5;
+    s.field[11] = 14;
+    System.out.println(AiLogic.chooseTurn(s));
   }
 }

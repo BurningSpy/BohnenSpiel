@@ -19,8 +19,6 @@ public class Main {
   static int p1 = 0;
   static int p2 = 0;
 
-  static HashMap<Integer, State> calculatedStates = new HashMap<>();
-
   public static void main(String[] args) throws Exception {
     // System.out.println(load(server));
     // createGame();
@@ -94,9 +92,9 @@ public class Main {
           int selectedField = moveState - 1;
           board = updateBoard(board, selectedField);
           currentState = new State();
-          currentState.spielfeld = board;
-          currentState.punkteRot = p1;
-          currentState.punkteBlau = p2;
+          currentState.field = board;
+          currentState.redPoints = p1;
+          currentState.bluePoints = p2;
           currentState.calcHeuristic();
           System.out.println("Gegner waehlte: " + moveState + " /\t" + p1 + " - " + p2);
           System.out.println(printBoard(board) + "\n");
