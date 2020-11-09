@@ -140,33 +140,52 @@ public class State {
         if (!AiLogic.isRed) {
             this.heuristic = this.bluePoints - this.redPoints;
         } else {
-          break;
+            this.heuristic = this.redPoints - this.bluePoints;
         }
-      }
-      if(capturedbeans > max) {
-        max = capturedbeans;
-      }
 
-    }
-    this.heuristic = this.heuristic - max; /* geeigneten Faktor*/
+        int max = 0;
+        int index;
+        int capturedbeans = 0;
+        int help;
+        for (int i=this.start; i<this.end;i++){
+            help = i;
+            while (true) {
+                index = (this.field[i] + help)%12;
+                if (this.field[index] == 1 || this.field[index] == 3 || this.field[index] == 5) {
+                    capturedbeans = capturedbeans + this.field[index] +1;
 
-        /* - quadratische Varianz der Bohnen in eigenen Feldern nach Zug */
-        double sum = 0;
-        double average;
-        double varianz;
+                } else {
+                    break;
+                }
+            }
+            if(capturedbeans > max) {
+                max = capturedbeans;
+            }
 
-        for (int i = this.start; i <= this.end; i++) {
-            sum = sum + this.field[i];
         }
-        average = sum / 6;
+          if(capturedbeans > max) {
+            max = capturedbeans;
+          }
 
-        sum = 0;
-        for (int i = this.start; i <= this.end; i++) {
-            sum = sum + (int) Math.pow(average - this.field[i], 2);
+        this.heuristic = this.heuristic - max; /* geeigneten Faktor*/
+
+            /* - quadratische Varianz der Bohnen in eigenen Feldern nach Zug */
+            double sum = 0;
+            double average;
+            double varianz;
+
+            for (int i = this.start; i <= this.end; i++) {
+                sum = sum + this.field[i];
+            }
+            average = sum / 6;
+
+            sum = 0;
+            for (int i = this.start; i <= this.end; i++) {
+                sum = sum + (int) Math.pow(average - this.field[i], 2);
+            }
+            varianz = sum / 6;
+            this.heuristic = this.heuristic - (int) (varianz * 0.5); /* müssen hier einen geeigneten Faktor wählen */
         }
-        varianz = sum / 6;
-        this.heuristic = this.heuristic - (int) (varianz * 0.5); /* müssen hier einen geeigneten Faktor wählen */
-    }
 
 
     @Override
