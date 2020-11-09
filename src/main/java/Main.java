@@ -74,9 +74,11 @@ public class Main {
     int[] board = {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6}; // position 1-12
     int start, end;
     if (offset == 0) {
+      AiLogic.isRed = true;
       start = 7;
       end = 12;
     } else {
+      AiLogic.isRed = false;
       start = 1;
       end = 6;
     }
