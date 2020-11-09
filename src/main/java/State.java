@@ -100,38 +100,47 @@ public class State {
   /** Heuristik berechnen */
   public void calcHeuristic() {
     this.heuristic = this.bluePoints - this.redPoints;
-     /* - Punkte abziehen fuer Felder mit 1,3,5 nach Zug*/
     int odd = 0;
     for(int i=0; i<11;i++){
       if(this.field[i]==1 || this.field[i]==3 || this.field[i]==5){
         odd = odd + this.field[i];
       }
     }
-    this.heuristic = this.heuristic - (odd*0,3);
-    
-   /* - quadratische Varianz der Bohnen in eigenen Feldern nach Zug */
+    this.heuristic = this.heuristic - (int)(odd*0.3); /* geeigneten Faktor*/
+
+    /* - quadratische Varianz der Bohnen in eigenen Feldern nach Zug */
     int sum = 0;
     double average = 0;
+    int varianz;
     if (redsTurn){
       for (int i=0; i<5; i++){
         sum = sum + this.field[i];
       }
-    average = sum/(i+1);
-    
-     sum = 0;
-    for (int i=0; i<5; i++){
-      sum = 
-      
-    
-     
-    
-    
-      
-    /**
-     
-     * Feldern nach Zug - Anzahl eigener moeglichen Zuege
-     */
-  }
+      average = sum/6;
+
+      sum = 0;
+      for (int i=0; i<5; i++) {
+        sum = sum + (int) Math.pow((double) (average - this.field[i]), 2);
+      }
+      int varianz = sum/6;
+
+      }else{
+      for (int i=6; i<11; i++){
+        sum = sum + this.field[i];
+      }
+      average = sum/6;
+
+      sum = 0;
+      for (int i=6; i<11; i++) {
+        sum = sum + (int) Math.pow((double) (average - this.field[i]), 2);
+      }
+
+    }
+    varianz = sum/6;
+    this.heuristic = this.heuristic - varianz; /* müssen hier einen geeigneten Faktor wählen */
+
+
+    }
 
   @Override
   public boolean equals(Object o) {
