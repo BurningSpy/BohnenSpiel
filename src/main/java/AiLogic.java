@@ -32,11 +32,10 @@ public class AiLogic {
     } else {
       state = help;
     }
-    /* if this is true then we have no possible move on this state and the game would end
+    // if this is true then we have no possible move on this state and the game would end
     if (state.children.size() == 0) {
       return state.heuristic;
     }
-     */
     if (depth % 2 == 0) {
       bestValue = Double.NEGATIVE_INFINITY;
       for (int i = 0; i < state.children.size(); i++) {
