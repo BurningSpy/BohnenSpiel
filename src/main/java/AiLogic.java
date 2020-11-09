@@ -24,18 +24,27 @@ public class AiLogic {
     if (depth >= maxDepth) {
       return state.heuristic;
     }
-    // even depth means MaxPlayer
-    double bestValue;
+
+    // if state is already known then don't calculate children again
     State help = calculatedStates.get(state.hashCode());
     if (help == null) {
       state.expand();
     } else {
+      help.turn = state.turn;
+      help.depth = state.depth;
+      for (int i = 0; i < state.children.size(); i++) {
+        help.children.get(i).depth = help.depth + 1;
+      }
       state = help;
     }
+
     // if this is true then we have no possible move on this state and the game would end
     if (state.children.size() == 0) {
       return state.heuristic;
     }
+
+    // even depth means MaxPlayer
+    double bestValue;
     if (depth % 2 == 0) {
       bestValue = Double.NEGATIVE_INFINITY;
       for (int i = 0; i < state.children.size(); i++) {
