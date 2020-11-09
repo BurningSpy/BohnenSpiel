@@ -3,7 +3,7 @@ import java.util.LinkedList;
 
 public class State {
   int[] field;
-  int redPoints, bluePoints, heuristic, turn, depth;
+  int redPoints, bluePoints, heuristic, turn, depth, start, end;
   boolean redsTurn;
   State prev;
   LinkedList<State> children = new LinkedList<>();
@@ -15,6 +15,15 @@ public class State {
     this.redsTurn = true;
     this.depth = 0;
     calcHeuristic();
+
+    // determine iteration starting points
+    if (!this.redsTurn) {
+      start = 0;
+      end = 5;
+    } else {
+      start = 6;
+      end = 11;
+    }
   }
 
   // Kopierkonstruktor
@@ -22,9 +31,12 @@ public class State {
     this.field = Arrays.copyOf(state.field, 12);
     this.bluePoints = state.bluePoints;
     this.redPoints = state.redPoints;
-    this.redsTurn = state.redsTurn;
+    this.redsTurn = !state.redsTurn;
     this.heuristic = state.heuristic;
     this.depth = state.depth + 1;
+    // determine iteration starting point
+    this.start = (state.start == 0) ?  6 : 0;
+    this.end = (state.end == 5) ? 11 : 5;
   }
 
   // Move durchspielen
@@ -57,19 +69,10 @@ public class State {
 
   // Find Neighbor/expand (list all next states)
   public void expand() {
-    int start, end;
     LinkedList<State> possibleStates = new LinkedList<>();
 
-    // determine iteration starting point
-    if (!this.redsTurn) {
-      start = 0;
-      end = 5;
-    } else {
-      start = 6;
-      end = 11;
-    }
     // iterate over all of one player's possible moves
-    for (int i = start; i <= end; i++) {
+    for (int i = this.start; i <= this.end; i++) {
       if (this.field[i] != 0) {
         State nextState = new State(this); //
         nextState = calcNextState(nextState, i);
@@ -80,9 +83,17 @@ public class State {
         }
       }
     }
-    // bohnen vom gegner neu auf seine punkte berechnen und heuristik updaten
+
+    // If no possible turns left, give points to enemy recalc heuristic
     if (this.children.size() == 0) {
-      // this.heuristic = -1000;
+      for(int i = (this.start == 0) ? 6 : 0; i <= ((this.end == 5) ? 11 : 5); i++){
+        if(redsTurn){
+          this.bluePoints += this.field[i];
+        } else {
+          this.redPoints += this.field[i];
+        }
+      }
+      this.calcHeuristic();
     }
     this.children = possibleStates;
     AiLogic.calculatedStates.put(this.hashCode(), this);
@@ -99,6 +110,13 @@ public class State {
 
   /** Heuristik berechnen */
   public void calcHeuristic() {
+    if(this.bluePoints > 36){
+      this.heuristic = 1000;
+      return;
+    }else if(this.redPoints > 36){
+      this.heuristic = -1000;
+      return;
+    }
     this.heuristic = this.bluePoints - this.redPoints;
     int odd = 0;
     for(int i=0; i<11;i++){
@@ -112,35 +130,21 @@ public class State {
     int sum = 0;
     double average = 0;
     int varianz;
-    if (redsTurn){
-      for (int i=0; i<5; i++){
-        sum = sum + this.field[i];
-      }
-      average = sum/6;
 
-      sum = 0;
-      for (int i=0; i<5; i++) {
-        sum = sum + (int) Math.pow((double) (average - this.field[i]), 2);
-      }
-      int varianz = sum/6;
+    for (int i = this.start; i <= this.end; i++){
+      sum = sum + this.field[i];
+    }
+    average = sum/6;
 
-      }else{
-      for (int i=6; i<11; i++){
-        sum = sum + this.field[i];
-      }
-      average = sum/6;
-
-      sum = 0;
-      for (int i=6; i<11; i++) {
-        sum = sum + (int) Math.pow((double) (average - this.field[i]), 2);
-      }
-
+    sum = 0;
+    for (int i = this.start; i<=this.end; i++) {
+      sum = sum + (int) Math.pow((double) (average - this.field[i]), 2);
     }
     varianz = sum/6;
-    this.heuristic = this.heuristic - varianz; /* müssen hier einen geeigneten Faktor wählen */
+    this.heuristic = this.heuristic - (int)(varianz * 0.5); /* müssen hier einen geeigneten Faktor wählen */
+  }
 
 
-    }
 
   @Override
   public boolean equals(Object o) {
