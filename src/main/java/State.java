@@ -6,7 +6,6 @@ public class State {
   int redPoints;
   int bluePoints;
   int turn;
-  int depth;
   int start;
   int end;
   double heuristic;
@@ -21,7 +20,6 @@ public class State {
     Arrays.fill(this.field, 6);
     this.bluePoints = this.redPoints = 0;
     this.redsTurn = AiLogic.isRed;
-    this.depth = 0;
     this.gameOver = false;
 
     // determine iteration starting points
@@ -45,7 +43,6 @@ public class State {
     this.redPoints = state.redPoints;
     this.redsTurn = !state.redsTurn;
     this.heuristic = state.heuristic;
-    this.depth = state.depth + 1;
     this.prev = state;
     this.gameOver = state.gameOver;
     // determine iteration starting point
@@ -174,7 +171,7 @@ public class State {
         }
         index = (this.field[i] + help) % 12;
         if (this.field[index] == 1 || this.field[index] == 3 || this.field[index] == 5) {
-          capturedbeans = capturedbeans + this.field[index] + 1;
+          capturedbeans += this.field[index] + 1;
           help--;
         } else {
           break;
@@ -187,9 +184,9 @@ public class State {
     }
 
     if (AiLogic.isRed && redsTurn || !AiLogic.isRed && !redsTurn) {
-      this.heuristic = this.heuristic - max;
+      this.heuristic -= AiLogic.oddBeansFactor * max;
     } else {
-      this.heuristic = this.heuristic + max;
+      this.heuristic += AiLogic.oddBeansFactor * max;
     }
 
     /* - quadratische Varianz der Bohnen in eigenen Feldern nach Zug */
@@ -197,17 +194,16 @@ public class State {
     double average;
 
     for (int i = this.start; i <= this.end; i++) {
-      sum = sum + this.field[i];
+      sum += this.field[i];
     }
     average = sum / 6;
 
     sum = 0;
     for (int i = this.start; i <= this.end; i++) {
-      sum = sum + (int) Math.pow(average - this.field[i], 2);
+      sum += (int) Math.pow(average - this.field[i], 2);
     }
     double variance = sum / 6;
-    this.heuristic =
-        this.heuristic - (int) (variance * 0.1); /* müssen hier einen geeigneten Faktor wählen */
+    this.heuristic -= (int) (variance * AiLogic.varianceFactor);
   }
 
   @Override
@@ -236,21 +232,9 @@ public class State {
 
   public static void main(String[] args) {
     State s = new State();
-    s.field[0] = 0;
-    s.field[1] = 0;
-    s.field[2] = 0;
-    s.field[3] = 0;
-    s.field[4] = 0;
-    s.field[5] = 3;
-    s.field[6] = 5;
-    s.field[7] = 5;
-    s.field[8] = 1;
-    s.field[9] = 3;
-    s.field[10] = 15;
-    s.field[11] = 0;
+    s.field = new int[] {0, 0, 0, 0, 0, 3, 5, 5, 1, 3, 15, 0};
     s.redPoints = 34;
     s.bluePoints = 16;
-    s.depth = 9;
     s.start = 0;
     s.end = 5;
     s.redsTurn = true;

@@ -4,6 +4,8 @@ import java.util.HashMap;
 public class AiLogic {
   // change values here to make AI better-slower/worse-faster
   static int maxDepth = 11;
+  static double varianceFactor = 0.1;
+  static double oddBeansFactor = 1;
 
   // Don't change anything here
   static int bestTurn;
@@ -20,10 +22,12 @@ public class AiLogic {
     bestTurn = 0;
     Date start = new Date();
     double heuristic = minimax(state, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-    System.out.println("Enscheidung fuer Zug: " + bestTurn);
+
+    // System.out.println("Enscheidung fuer Zug: " + bestTurn);
     System.out.println("Zeit fuer Zug: " + (new Date().getTime() - start.getTime()) + "ms");
-    System.out.println("Anzahl Kinder: " + state.children.size());
-    System.out.println("Wert des \"besten\"Zuges: " + heuristic);
+    // System.out.println("Anzahl Kinder: " + state.children.size());
+    // System.out.println("Wert des \"besten\"Zuges: " + heuristic);
+
     return bestTurn;
   }
 
@@ -59,7 +63,9 @@ public class AiLogic {
          state = help;
        }
     */
-    state.expand();
+    if (state.children.size() == 0) {
+      state.expand();
+    }
     // if this is true then we have no possible move on this state and the game would end
     if (state.children.size() == 0) {
       return state.heuristic;
