@@ -85,6 +85,9 @@ public class State {
         break;
       }
     }
+    if (this.redPoints + this.bluePoints > 72) {
+      System.out.println("WTF");
+    }
     if (this.depth >= AiLogic.maxDepth) {
       calcHeuristic();
     }
@@ -231,5 +234,29 @@ public class State {
       result += this.field[i] << 2 * i + 5;
     }
     return result;
+  }
+
+  public static void main(String[] args) {
+    State s = new State();
+    s.field[0] = 0;
+    s.field[1] = 0;
+    s.field[2] = 0;
+    s.field[3] = 0;
+    s.field[4] = 0;
+    s.field[5] = 3;
+    s.field[6] = 5;
+    s.field[7] = 5;
+    s.field[8] = 1;
+    s.field[9] = 3;
+    s.field[10] = 15;
+    s.field[11] = 0;
+    s.redPoints = 34;
+    s.bluePoints = 16;
+    s.depth = 9;
+    s.start = 0;
+    s.end = 5;
+    s.redsTurn = true;
+    s.gameOver = false;
+    s.expand();
   }
 }
