@@ -75,9 +75,9 @@ public class State {
       index = (field + capturedBeans) % 12;
       if (this.field[index] == 2 || this.field[index] == 4 || this.field[index] == 6) {
         if (this.redsTurn) {
-          this.redPoints = this.redPoints + this.field[index];
+          this.redPoints += this.field[index];
         } else {
-          this.bluePoints = this.redPoints + this.field[index];
+          this.bluePoints += this.field[index];
         }
         this.field[index] = 0;
         capturedBeans--;

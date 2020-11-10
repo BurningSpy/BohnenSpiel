@@ -14,7 +14,7 @@ public class Main {
     wenn diese eine bestimmte Stufe der Selbsterkenntnis erreicht hat.
     Im modernen Zeitalter wird dieser Ausdruck in Korea für bemerkenswerte Leistungen verwendet[...]
   */
-  static String name = "test";
+  static String name = "Mr. Anderson";
 
   static int p1 = 0; // Rot
   static int p2 = 0; // Blau
