@@ -3,7 +3,7 @@ import java.util.HashMap;
 
 public class AiLogic {
   // change values here to make AI better-slower/worse-faster
-  static int maxDepth = 10;
+  static int maxDepth = 11;
 
   // Don't change anything here
   static int bestTurn;

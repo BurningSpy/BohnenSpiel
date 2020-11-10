@@ -88,9 +88,7 @@ public class State {
     if (this.redPoints + this.bluePoints > 72) {
       System.out.println("WTF");
     }
-    if (this.depth >= AiLogic.maxDepth) {
-      calcHeuristic();
-    }
+    calcHeuristic();
   }
 
   /** creates all children nodes of the state instance. */
@@ -159,9 +157,9 @@ public class State {
       }
     }
     if (AiLogic.isRed) {
-      this.heuristic = (this.bluePoints - this.redPoints) * 3;
+      this.heuristic = (this.bluePoints - this.redPoints);
     } else {
-      this.heuristic = (this.redPoints - this.bluePoints) * 3;
+      this.heuristic = (this.redPoints - this.bluePoints);
     }
 
     int max = 0;
