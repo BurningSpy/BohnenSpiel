@@ -11,15 +11,18 @@ public class State {
   int end;
   double heuristic;
   boolean redsTurn;
+  boolean gameOver;
   State prev;
   LinkedList<State> children = new LinkedList<>();
 
+  /** initializes the very first game State. */
   public State() {
     this.field = new int[12];
     Arrays.fill(this.field, 6);
     this.bluePoints = this.redPoints = 0;
     this.redsTurn = AiLogic.isRed;
     this.depth = 0;
+    this.gameOver = false;
 
     // determine iteration starting points
     if (this.redsTurn) {
@@ -31,7 +34,11 @@ public class State {
     }
   }
 
-  // Kopierkonstruktor
+  /**
+   * creates a new state and copies the attributes via the given parameter.
+   *
+   * @param state the state from which to copies the attributes from
+   */
   public State(State state) {
     this.field = Arrays.copyOf(state.field, 12);
     this.bluePoints = state.bluePoints;
@@ -40,6 +47,7 @@ public class State {
     this.heuristic = state.heuristic;
     this.depth = state.depth + 1;
     this.prev = state;
+    this.gameOver = state.gameOver;
     // determine iteration starting point
     this.start = (state.start == 0) ? 6 : 0;
     this.end = (state.end == 5) ? 11 : 5;
@@ -47,7 +55,11 @@ public class State {
     this.children = new LinkedList<>();
   }
 
-  // Move durchspielen
+  /**
+   * plays out a single move on the state instance.
+   *
+   * @param field which move to play
+   */
   public void doMove(int field) {
     int index;
     int capturedBeans = this.field[field];
@@ -78,7 +90,7 @@ public class State {
     }
   }
 
-  // Find Neighbor/expand (list all next states)
+  /** creates all children nodes of the state instance. */
   public void expand() {
     LinkedList<State> possibleStates = new LinkedList<>();
 
@@ -123,6 +135,7 @@ public class State {
           this.redPoints += this.field[i];
         }
       }
+      this.gameOver = true;
       calcHeuristic();
     }
     AiLogic.calculatedStates.put(this.hashCode(), this);
@@ -130,15 +143,18 @@ public class State {
 
   /** calculate Heuristic. */
   public void calcHeuristic() {
-
-    if (this.bluePoints > 36) {
-      this.heuristic = (!AiLogic.isRed) ? +1000 : -1000;
-      return;
-    } else if (this.redPoints > 36) {
-      this.heuristic = (!AiLogic.isRed) ? -1000 : +1000;
-      return;
+    if (gameOver) {
+      if (this.bluePoints > this.redPoints) {
+        this.heuristic = AiLogic.isRed ? -1000 : 1000;
+        return;
+      } else if (this.redPoints > this.bluePoints) {
+        this.heuristic = AiLogic.isRed ? 1000 : -1000;
+        return;
+      } else {
+        this.heuristic = 0;
+        return;
+      }
     }
-
     if (AiLogic.isRed) {
       this.heuristic = (this.bluePoints - this.redPoints) * 3;
     } else {
@@ -215,27 +231,5 @@ public class State {
       result += this.field[i] << 2 * i + 5;
     }
     return result;
-  }
-
-  public static void main(String[] args) {
-    State s = new State();
-    s.redsTurn = true;
-    s.field[0] = 0;
-    s.field[1] = 2;
-    s.field[2] = 5;
-    s.field[3] = 1;
-    s.field[4] = 4;
-    s.field[5] = 16;
-    s.field[6] = 0;
-    s.field[7] = 0;
-    s.field[8] = 12;
-    s.field[9] = 3;
-    s.field[10] = 13;
-    s.field[11] = 0;
-    s.bluePoints = 0;
-    s.redPoints = 16;
-    s.redsTurn = false;
-    AiLogic.isRed = true;
-    System.out.println(AiLogic.chooseTurn(s));
   }
 }

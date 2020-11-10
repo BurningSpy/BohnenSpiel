@@ -19,6 +19,7 @@ public class Main {
   static int p1 = 0; // Rot
   static int p2 = 0; // Blau
 
+  /** entry point for the program. */
   public static void main(String[] args) throws Exception {
     // System.out.println(load(server));
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
