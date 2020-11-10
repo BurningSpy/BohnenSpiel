@@ -13,32 +13,34 @@ public class AiLogic {
   public static int chooseTurn(State state) {
     bestTurn = 0;
     Date start = new Date();
-    minimax(state, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
+    double heuristic = minimax(state, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
     System.out.println("Enscheidung fuer Zug: " + bestTurn);
     System.out.println("Zeit fuer Zug: " + (new Date().getTime() - start.getTime()) + "ms");
     System.out.println("Anzahl Kinder: " + state.children.size());
+    System.out.println("Wert des \"besten\"Zuges: " + heuristic);
+
     return bestTurn;
   }
 
   // minimax with alpha-beta-pruning
-  public static int minimax(State state, int depth, double alpha, double beta) {
+  public static double minimax(State state, int depth, double alpha, double beta) {
     if (depth >= maxDepth) {
       return state.heuristic;
     }
 
     // if state is already known then don't calculate children again
-    State help = calculatedStates.get(state.hashCode());
-    if (help == null) {
-      state.expand();
-    } else {
-      help.turn = state.turn;
-      help.depth = state.depth;
-      for (int i = 0; i < state.children.size(); i++) {
-        help.children.get(i).depth = help.depth + 1;
-      }
-      state = help;
-    }
-
+//    State help = calculatedStates.get(state.hashCode());
+//    if (help == null) {
+//      state.expand();
+//    } else {
+//      help.turn = state.turn;
+//      help.depth = state.depth;
+//      for (int i = 0; i < help.children.size(); i++) {
+//        help.children.get(i).depth = help.depth + 1;
+//      }
+//      state = help;
+//    }
+    state.expand();
     // if this is true then we have no possible move on this state and the game would end
     if (state.children.size() == 0) {
       return state.heuristic;
@@ -49,7 +51,7 @@ public class AiLogic {
     if (depth % 2 == 0) {
       bestValue = Double.NEGATIVE_INFINITY;
       for (int i = 0; i < state.children.size(); i++) {
-        int value = minimax(state.children.get(i), depth + 1, alpha, beta);
+        double value = minimax(state.children.get(i), depth + 1, alpha, beta);
         if (depth == 0) {
           if (value > bestValue) {
             bestTurn = state.children.get(i).turn;
@@ -66,7 +68,7 @@ public class AiLogic {
     else {
       bestValue = Double.POSITIVE_INFINITY;
       for (State s : state.children) {
-        int value = minimax(s, depth + 1, alpha, beta);
+        double value = minimax(s, depth + 1, alpha, beta);
         bestValue = Math.min(bestValue, value);
         beta = Math.min(beta, bestValue);
         if (beta <= alpha) {

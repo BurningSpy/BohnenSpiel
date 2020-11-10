@@ -14,10 +14,10 @@ public class Main {
     wenn diese eine bestimmte Stufe der Selbsterkenntnis erreicht hat.
     Im modernen Zeitalter wird dieser Ausdruck in Korea für bemerkenswerte Leistungen verwendet[...]
   */
-  static String name = "Mr. Anderson";
+  static String name = "test";
 
-  static int p1 = 0;
-  static int p2 = 0;
+  static int p1 = 0; // Rot
+  static int p2 = 0; // Blau
 
   public static void main(String[] args) throws Exception {
     // System.out.println(load(server));
@@ -89,16 +89,14 @@ public class Main {
     int[] board = {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6}; // position 1-12
     int start, end;
     if (offset == 0) {
-      AiLogic.isRed = true;
       start = 7;
       end = 12;
     } else {
-      AiLogic.isRed = false;
       start = 1;
       end = 6;
     }
-    State currentState = new State();
-    currentState.redsTurn = offset == 0;
+    AiLogic.isRed = (offset == 0) ? true : false;
+    State currentState;
 
     while (true) {
       Thread.sleep(50);
@@ -108,17 +106,16 @@ public class Main {
         if (moveState != -1) {
           int selectedField = moveState - 1;
           updateBoard(board, selectedField);
-          currentState = new State();
-          currentState.field = Arrays.copyOf(board, 12);
-          currentState.redPoints = p1;
-          currentState.bluePoints = p2;
-          currentState.calcHeuristic();
           System.out.println("Gegner waehlte: " + moveState + " /\t" + p1 + " - " + p2);
           System.out.println(printBoard(board) + "\n");
         }
         // calculate fieldID
         int selectField;
         // System.out.println("Finde Zahl: ");
+        currentState = new State();
+        currentState.field = Arrays.copyOf(board, 12);
+        currentState.redPoints = p1;
+        currentState.bluePoints = p2;
         do {
           selectField = AiLogic.chooseTurn(currentState);
           // System.out.println("\t-> " + selectField );
