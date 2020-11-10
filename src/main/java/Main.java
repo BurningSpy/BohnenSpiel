@@ -44,10 +44,10 @@ public class Main {
   @SuppressWarnings("all")
   static void createGame() throws Exception {
     String url = server + "/api/creategame/" + name;
-    String gameID = load(url);
-    System.out.println("Spiel erstellt. ID: " + gameID);
+    String gameId = load(url);
+    System.out.println("Spiel erstellt. ID: " + gameId);
 
-    url = server + "/api/check/" + gameID + "/" + name;
+    url = server + "/api/check/" + gameId + "/" + name;
     while (true) {
       Thread.sleep(3000);
       String state = load(url);
@@ -59,7 +59,7 @@ public class Main {
         return;
       }
     }
-    play(gameID, 0);
+    play(gameId, 0);
   }
 
   static void openGames() throws Exception {
@@ -70,24 +70,25 @@ public class Main {
     }
   }
 
-  static void joinGame(String gameID) throws Exception {
-    String url = server + "/api/joingame/" + gameID + "/" + name;
+  static void joinGame(String gameId) throws Exception {
+    String url = server + "/api/joingame/" + gameId + "/" + name;
     String state = load(url);
     System.out.println("Join-Game-State: " + state);
     if (state.equals("1")) {
-      play(gameID, 6);
+      play(gameId, 6);
     } else if (state.equals("0")) {
       System.out.println("error (join game)");
     }
   }
 
   @SuppressWarnings("all")
-  static void play(String gameID, int offset) throws Exception {
-    String checkURL = server + "/api/check/" + gameID + "/" + name;
-    String statesMsgURL = server + "/api/statemsg/" + gameID;
-    String stateIdURL = server + "/api/state/" + gameID;
+  static void play(String gameId, int offset) throws Exception {
+    String checkUrl = server + "/api/check/" + gameId + "/" + name;
+    String statesMsgUrl = server + "/api/statemsg/" + gameId;
+    String stateIdUrl = server + "/api/state/" + gameId;
     int[] board = {6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6}; // position 1-12
-    int start, end;
+    int start;
+    int end;
     if (offset == 0) {
       start = 7;
       end = 12;
@@ -100,9 +101,9 @@ public class Main {
 
     while (true) {
       Thread.sleep(50);
-      int moveState = Integer.parseInt(load(checkURL));
-      int stateID = Integer.parseInt(load(stateIdURL));
-      if (stateID != 2 && ((start <= moveState && moveState <= end) || moveState == -1)) {
+      int moveState = Integer.parseInt(load(checkUrl));
+      int stateId = Integer.parseInt(load(stateIdUrl));
+      if (stateId != 2 && ((start <= moveState && moveState <= end) || moveState == -1)) {
         if (moveState != -1) {
           int selectedField = moveState - 1;
           updateBoard(board, selectedField);
@@ -110,12 +111,12 @@ public class Main {
           System.out.println(printBoard(board) + "\n");
         }
         // calculate fieldID
-        int selectField;
         // System.out.println("Finde Zahl: ");
         currentState = new State();
         currentState.field = Arrays.copyOf(board, 12);
         currentState.redPoints = p1;
         currentState.bluePoints = p2;
+        int selectField;
         do {
           selectField = AiLogic.chooseTurn(currentState);
           // System.out.println("\t-> " + selectField );
@@ -125,14 +126,14 @@ public class Main {
         System.out.println("Waehle Feld: " + (selectField + 1) + " /\t" + p1 + " - " + p2);
         System.out.println(printBoard(board) + "\n\n");
 
-        move(gameID, selectField + 1);
-      } else if (moveState == -2 || stateID == 2) {
+        move(gameId, selectField + 1);
+      } else if (moveState == -2 || stateId == 2) {
         System.out.println("GAME Finished");
-        checkURL = server + "/api/statemsg/" + gameID;
-        System.out.println(load(checkURL));
+        checkUrl = server + "/api/statemsg/" + gameId;
+        System.out.println(load(checkUrl));
         return;
       } else {
-        System.out.println("- " + moveState + "\t\t" + load(statesMsgURL));
+        System.out.println("- " + moveState + "\t\t" + load(statesMsgUrl));
       }
     }
   }
@@ -183,8 +184,8 @@ public class Main {
     return s.toString();
   }
 
-  static void move(String gameID, int fieldID) throws Exception {
-    String url = server + "/api/move/" + gameID + "/" + name + "/" + fieldID;
+  static void move(String gameId, int fieldId) throws Exception {
+    String url = server + "/api/move/" + gameId + "/" + name + "/" + fieldId;
     System.out.println(load(url));
   }
 

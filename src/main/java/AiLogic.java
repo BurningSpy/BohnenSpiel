@@ -29,17 +29,17 @@ public class AiLogic {
     }
 
     // if state is already known then don't calculate children again
-//    State help = calculatedStates.get(state.hashCode());
-//    if (help == null) {
-//      state.expand();
-//    } else {
-//      help.turn = state.turn;
-//      help.depth = state.depth;
-//      for (int i = 0; i < help.children.size(); i++) {
-//        help.children.get(i).depth = help.depth + 1;
-//      }
-//      state = help;
-//    }
+    //    State help = calculatedStates.get(state.hashCode());
+    //    if (help == null) {
+    //      state.expand();
+    //    } else {
+    //      help.turn = state.turn;
+    //      help.depth = state.depth;
+    //      for (int i = 0; i < help.children.size(); i++) {
+    //        help.children.get(i).depth = help.depth + 1;
+    //      }
+    //      state = help;
+    //    }
     state.expand();
     // if this is true then we have no possible move on this state and the game would end
     if (state.children.size() == 0) {
@@ -63,9 +63,7 @@ public class AiLogic {
           break;
         }
       }
-    }
-    // uneven depth means MinPlayer
-    else {
+    } else { // uneven depth means MinPlayer
       bestValue = Double.POSITIVE_INFINITY;
       for (State s : state.children) {
         double value = minimax(s, depth + 1, alpha, beta);
