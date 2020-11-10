@@ -1,7 +1,7 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.util.HashMap;
+import java.util.Arrays;
 
 public class Main {
   // static String server = "http://127.0.0.1:5000";
@@ -21,13 +21,27 @@ public class Main {
 
   public static void main(String[] args) throws Exception {
     // System.out.println(load(server));
-    // createGame();
-    // openGames();
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    System.out.println("Enter 'join', 'create' or 'open'");
     String s = br.readLine();
-    joinGame(s);
+    switch (s) {
+      default:
+        System.out.println("Wrong input. Closing program.");
+        return;
+      case "join":
+        System.out.print("Enter Game-ID: ");
+        s = br.readLine();
+        joinGame(s);
+        break;
+      case "create":
+        createGame();
+        break;
+      case "open":
+        openGames();
+    }
   }
 
+  @SuppressWarnings("all")
   static void createGame() throws Exception {
     String url = server + "/api/creategame/" + name;
     String gameID = load(url);
@@ -50,9 +64,9 @@ public class Main {
 
   static void openGames() throws Exception {
     String url = server + "/api/opengames";
-    String[] opengames = load(url).split(";");
-    for (int i = 0; i < opengames.length; i++) {
-      System.out.println(opengames[i]);
+    String[] openGames = load(url).split(";");
+    for (String openGame : openGames) {
+      System.out.println(openGame);
     }
   }
 
@@ -67,6 +81,7 @@ public class Main {
     }
   }
 
+  @SuppressWarnings("all")
   static void play(String gameID, int offset) throws Exception {
     String checkURL = server + "/api/check/" + gameID + "/" + name;
     String statesMsgURL = server + "/api/statemsg/" + gameID;
@@ -86,15 +101,15 @@ public class Main {
     currentState.redsTurn = offset == 0;
 
     while (true) {
-      Thread.sleep(100);
+      Thread.sleep(50);
       int moveState = Integer.parseInt(load(checkURL));
       int stateID = Integer.parseInt(load(stateIdURL));
       if (stateID != 2 && ((start <= moveState && moveState <= end) || moveState == -1)) {
         if (moveState != -1) {
           int selectedField = moveState - 1;
-          board = updateBoard(board, selectedField);
+          updateBoard(board, selectedField);
           currentState = new State();
-          currentState.field = board;
+          currentState.field = Arrays.copyOf(board, 12);
           currentState.redPoints = p1;
           currentState.bluePoints = p2;
           currentState.calcHeuristic();
@@ -109,7 +124,7 @@ public class Main {
           // System.out.println("\t-> " + selectField );
         } while (board[selectField] == 0);
 
-        board = updateBoard(board, selectField);
+        updateBoard(board, selectField);
         System.out.println("Waehle Feld: " + (selectField + 1) + " /\t" + p1 + " - " + p2);
         System.out.println(printBoard(board) + "\n\n");
 
@@ -125,7 +140,7 @@ public class Main {
     }
   }
 
-  static int[] updateBoard(int[] board, int field) {
+  static void updateBoard(int[] board, int field) {
     int startField = field;
 
     int value = board[field];
@@ -147,29 +162,28 @@ public class Main {
         field = (field == 0) ? 11 : --field;
       } while (board[field] == 2 || board[field] == 4 || board[field] == 6);
     }
-    return board;
   }
 
   static String printBoard(int[] board) {
-    String s = "";
+    StringBuilder s = new StringBuilder();
     for (int i = 11; i >= 6; i--) {
       if (i != 6) {
-        s += board[i] + "; ";
+        s.append(board[i]).append("; ");
       } else {
-        s += board[i];
+        s.append(board[i]);
       }
     }
 
-    s += "\n";
+    s.append("\n");
     for (int i = 0; i <= 5; i++) {
       if (i != 5) {
-        s += board[i] + "; ";
+        s.append(board[i]).append("; ");
       } else {
-        s += board[i];
+        s.append(board[i]);
       }
     }
 
-    return s;
+    return s.toString();
   }
 
   static void move(String gameID, int fieldID) throws Exception {
@@ -182,7 +196,7 @@ public class Main {
     BufferedReader bufferedReader =
         new BufferedReader(new InputStreamReader(uri.toURL().openConnection().getInputStream()));
     StringBuilder sb = new StringBuilder();
-    String line = null;
+    String line;
     while ((line = bufferedReader.readLine()) != null) {
       sb.append(line);
     }

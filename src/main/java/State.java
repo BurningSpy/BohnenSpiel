@@ -26,7 +26,9 @@ public class State {
         }
     }
 
+
     // Kopierkonstruktor
+    @SuppressWarnings("all")
     public State(State state) {
         this.field = Arrays.copyOf(state.field, 12);
         this.bluePoints = state.bluePoints;
@@ -78,8 +80,8 @@ public class State {
                 nextState.doMove(i);
                 // nextState.prev = this;
                 nextState.turn = i;
+                boolean added = false;
                 if (redsTurn) {
-                    boolean added = false;
                     for (int j = 0; j < possibleStates.size(); j++) {
                         State s2 = possibleStates.get(j);
                         if (s2.heuristic > nextState.heuristic) {
@@ -88,11 +90,7 @@ public class State {
                             break;
                         }
                     }
-                    if (!added) {
-                        possibleStates.add(nextState);
-                    }
                 } else {
-                    boolean added = false;
                     for (int j = 0; j < possibleStates.size(); j++) {
                         State s2 = possibleStates.get(j);
                         if (s2.heuristic < nextState.heuristic) {
@@ -101,9 +99,9 @@ public class State {
                             break;
                         }
                     }
-                    if (!added) {
-                        possibleStates.add(nextState);
-                    }
+                }
+                if (!added) {
+                    possibleStates.add(nextState);
                 }
 
             }
