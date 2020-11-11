@@ -126,7 +126,7 @@ public class State {
       }
     }
     this.children = possibleStates;
-    // If no possible turns left, give points to enemy recalc heuristic
+    // If no possible turns left, give points to other player
     if (this.children.size() == 0) {
       for (int i = (this.start == 0) ? 6 : 0; i <= ((this.end == 5) ? 11 : 5); i++) {
         if (redsTurn) {
@@ -143,6 +143,7 @@ public class State {
 
   /** calculate Heuristic. */
   public void calcHeuristic() {
+    // checks if the game is over and we can have definite values of loss/win
     if (gameOver) {
       if (this.bluePoints > this.redPoints) {
         this.heuristic = AiLogic.isRed ? -1000 : 1000;
@@ -155,15 +156,18 @@ public class State {
         return;
       }
     }
+
+    // adds values of the already won points to the heuristic
     if (AiLogic.isRed) {
       this.heuristic = (this.bluePoints - this.redPoints);
     } else {
       this.heuristic = (this.redPoints - this.bluePoints);
     }
 
+    // gives points depending on the amount of 1,3 or 5 fields after a turn
     int max = 0;
     int index;
-    int capturedbeans = 0;
+    int capturedBeans = 0;
     int help;
     for (int i = this.start; i < this.end; i++) {
       help = i;
@@ -173,33 +177,30 @@ public class State {
         }
         index = (this.field[i] + help) % 12;
         if (this.field[index] == 1 || this.field[index] == 3 || this.field[index] == 5) {
-          capturedbeans += this.field[index] + 1;
+          capturedBeans += this.field[index] + 1;
           help--;
         } else {
           break;
         }
       }
-      if (capturedbeans > max) {
-        max = capturedbeans;
+      if (capturedBeans > max) {
+        max = capturedBeans;
       }
-      capturedbeans = 0;
+      capturedBeans = 0;
     }
-
     if (AiLogic.isRed && redsTurn || !AiLogic.isRed && !redsTurn) {
       this.heuristic -= AiLogic.oddBeansFactor * max;
     } else {
       this.heuristic += AiLogic.oddBeansFactor * max;
     }
 
-    /* - quadratische Varianz der Bohnen in eigenen Feldern nach Zug */
+    /* - squared variance of own fields after turn */
     double sum = 0;
     double average;
-
     for (int i = this.start; i <= this.end; i++) {
       sum += this.field[i];
     }
     average = sum / 6;
-
     sum = 0;
     for (int i = this.start; i <= this.end; i++) {
       sum += (int) Math.pow(average - this.field[i], 2);

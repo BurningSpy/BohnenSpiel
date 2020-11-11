@@ -24,10 +24,10 @@ public class AiLogic {
     bestTurn = 0;
     Date start = new Date();
     minimax(state, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-    // System.out.println("Enscheidung fuer Zug: " + bestTurn);
-    System.out.println("Zeit fuer Zug: " + (new Date().getTime() - start.getTime()) + "ms");
-    // System.out.println("Anzahl Kinder: " + state.children.size());
-    // System.out.println("Wert des \"besten\"Zuges: " + heuristic);
+    // System.out.println("Deciding on turn: " + bestTurn);
+    System.out.println("Time for turn: " + (new Date().getTime() - start.getTime()) + "ms");
+    // System.out.println("Amount of children: " + state.children.size());
+    // System.out.println("Value of best turn: " + heuristic);
 
     return bestTurn;
   }
