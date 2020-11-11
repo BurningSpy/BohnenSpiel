@@ -60,14 +60,18 @@ public class AiLogic {
         double np = kiddo.prev.winsBlue + kiddo.prev.winsRed;
         double nk = kiddo.winsRed + kiddo.winsBlue;
         double vk = kiddo.redsTurn ? kiddo.winsRed / nk : kiddo.winsBlue / nk;
-        double utcValue = vk + cValue * Math.sqrt(Math.log(np) / nk);
+        double utcValue = vk + ((np != 0) ? cValue * Math.sqrt(Math.log(np) / nk) : 0);
         if (utcValue > maxUtc) {
           bestKid = i;
           maxUtc = utcValue;
         }
         i++;
       }
-      selectedState = state.children.get(bestKid);
+      if(selectedState.children.size()>0){
+        selectedState = selectedState.children.get(bestKid);
+      } else {
+        break;
+      }
     } while (selectedState.children.size() == selectedState.possibleChildren);
     return selectedState;
   }
@@ -98,6 +102,12 @@ public class AiLogic {
       return (state.heuristic > 0 ? 1 : state.heuristic == 0 ? 0 : -1);
     }
     State help = new State(state);
+    help.depth--;
+    help.redsTurn = !help.redsTurn;
+    help.prev = state.prev;
+    help.start = (help.start == 0) ? 6 : 0;
+    help.end = (help.end == 5) ? 11 : 5;
+
     while (true) {
       if ((help.redPoints > 36 && isRed) || (help.bluePoints > 36 && !isRed)) {
         return 1;
@@ -107,21 +117,21 @@ public class AiLogic {
         return 0;
       } else if (help.depth >= maxDepth) {
         help.calcHeuristic();
-        return (state.heuristic > 0 ? 1 : state.heuristic == 0 ? 0 : -1);
+        return (help.heuristic > 0 ? 1 : help.heuristic == 0 ? 0 : -1);
       }
       LinkedList<Integer> possibleMoves = new LinkedList<>();
-      for (int i = state.start; i <= state.end; i++) {
-        if (state.field[i] != 0) {
+      for (int i = help.start; i <= help.end; i++) {
+        if (help.field[i] != 0) {
           possibleMoves.add(i);
         }
       }
       if (possibleMoves.size() == 0) {
         help.calcHeuristic();
-        return (state.heuristic > 0 ? 1 : state.heuristic == 0 ? 0 : -1);
+        return (help.heuristic > 0 ? 1 : help.heuristic == 0 ? 0 : -1);
       }
-      State newChild = new State(state);
       int randomTurn = (int) (Math.random() * possibleMoves.size());
-      newChild.doMove(possibleMoves.get(randomTurn));
+      help.doMove(possibleMoves.get(randomTurn));
+      help = new State(help);
     }
   }
 
@@ -132,7 +142,7 @@ public class AiLogic {
       state.winsRed += redWin ? 1 : 0;
       state.winsBlue += blueWin ? 1 : 0;
       state = state.prev;
-    } while (state.prev != null);
+    } while (state != null);
   }
 
   public static int pickWinner(State state) {

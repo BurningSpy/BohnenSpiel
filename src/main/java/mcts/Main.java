@@ -16,7 +16,7 @@ public class Main {
     wenn diese eine bestimmte Stufe der Selbsterkenntnis erreicht hat.
     Im modernen Zeitalter wird dieser Ausdruck in Korea für bemerkenswerte Leistungen verwendet[...]
   */
-  static String name = "Mr. Anderson";
+  static String name = "InsertBeanPun";
 
   static int p1 = 0; // Rot
   static int p2 = 0; // Blau
@@ -119,11 +119,11 @@ public class Main {
         currentState.field = Arrays.copyOf(board, 12);
         currentState.redPoints = p1;
         currentState.bluePoints = p2;
-
+        currentState.setMaxChildren();
         int selectField;
         do {
           selectField = AiLogic.chooseTurn(currentState);
-          // System.out.println("\t-> " + selectField );
+          System.out.println("Confidence level-> " + (double) currentState.winsBlue / (double)(currentState.winsRed + currentState.winsBlue) + "%" );
         } while (board[selectField] == 0);
 
         updateBoard(board, selectField);

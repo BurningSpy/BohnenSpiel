@@ -68,21 +68,39 @@ public class State {
   /**
    * plays out a single move on the state instance.
    *
-   * @param field which move to play
+   * @param move which move to play
    */
-  public void doMove(int field) {
+  public void doMove(int move) {
+    // if no moves available give points to enemy
+    this.turn = move;
+    boolean fieldEmtpy = true;
+    for(int i = start; i <= end; i++){
+      if(this.field[i] != 0){
+        fieldEmtpy = false;
+      }
+    }
+    if(fieldEmtpy){
+      for (int i = start; i <= end; i++) {
+        if(redsTurn){
+          bluePoints += this.field[i];
+        } else {
+          redPoints += this.field[i];
+        }
+      }
+      return;
+    }
     int index;
-    int capturedBeans = this.field[field];
-    this.field[field] = 0;
+    int capturedBeans = this.field[move];
+    this.field[move] = 0;
     for (int i = 1; i <= capturedBeans; i++) {
-      index = (field + i) % 12;
+      index = (move + i) % 12;
       this.field[index]++;
     }
     while (true) {
       if (capturedBeans < 0) {
         break;
       }
-      index = (field + capturedBeans) % 12;
+      index = (move + capturedBeans) % 12;
       if (this.field[index] == 2 || this.field[index] == 4 || this.field[index] == 6) {
         if (this.redsTurn) {
           this.redPoints += this.field[index];
@@ -95,6 +113,11 @@ public class State {
         break;
       }
     }
+    setMaxChildren();
+  }
+
+  public void setMaxChildren(){
+    this.possibleChildren = 0;
     for (int i = this.start; i <= this.end; i++) {
       if (this.field[i] != 0) {
         this.possibleChildren++;
