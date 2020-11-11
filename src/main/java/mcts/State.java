@@ -10,6 +10,7 @@ public class State {
   int turn;
   int start;
   int end;
+  int depth;
   double heuristic;
   boolean redsTurn;
   boolean gameOver;
@@ -17,6 +18,7 @@ public class State {
   int winsBlue;
   State prev;
   LinkedList<State> children = new LinkedList<>();
+  int possibleChildren;
 
   /** initializes the very first game State. */
   public State() {
@@ -25,7 +27,10 @@ public class State {
     this.bluePoints = this.redPoints = 0;
     this.redsTurn = AiLogic.isRed;
     this.gameOver = false;
-
+    this.possibleChildren = 6;
+    this.depth = 0;
+    this.winsRed = 0;
+    this.winsBlue = 0;
     // determine iteration starting points
     if (this.redsTurn) {
       start = 0;
@@ -53,7 +58,11 @@ public class State {
     this.start = (state.start == 0) ? 6 : 0;
     this.end = (state.end == 5) ? 11 : 5;
     this.turn = 0;
+    this.depth = state.depth + 1;
     this.children = new LinkedList<>();
+    this.winsRed = 0;
+    this.winsBlue = 0;
+    this.possibleChildren = 0;
   }
 
   /**
@@ -86,61 +95,11 @@ public class State {
         break;
       }
     }
-    if (this.redPoints + this.bluePoints > 72) {
-      System.out.println("WTF");
-    }
-    calcHeuristic();
-  }
-
-  /** creates all children nodes of the state instance. */
-  public void expand() {
-    LinkedList<State> possibleStates = new LinkedList<>();
-
-    // iterate over all of one player's possible moves
     for (int i = this.start; i <= this.end; i++) {
       if (this.field[i] != 0) {
-        State nextState = new State(this); //
-        nextState.doMove(i);
-        nextState.turn = i;
-        boolean added = false;
-        if (redsTurn) {
-          for (int j = 0; j < possibleStates.size(); j++) {
-            State s2 = possibleStates.get(j);
-            if (s2.heuristic > nextState.heuristic) {
-              possibleStates.add(j, nextState);
-              added = true;
-              break;
-            }
-          }
-        } else {
-          for (int j = 0; j < possibleStates.size(); j++) {
-            State s2 = possibleStates.get(j);
-            if (s2.heuristic < nextState.heuristic) {
-              possibleStates.add(j, nextState);
-              added = true;
-              break;
-            }
-          }
-        }
-        if (!added) {
-          possibleStates.add(nextState);
-        }
+        this.possibleChildren++;
       }
     }
-    this.children = possibleStates;
-    // If no possible turns left, give points to enemy recalc heuristic
-    if (this.children.size() == 0) {
-      for (int i = (this.start == 0) ? 6 : 0; i <= ((this.end == 5) ? 11 : 5); i++) {
-        if (redsTurn) {
-          this.bluePoints += this.field[i];
-        } else {
-          this.redPoints += this.field[i];
-        }
-      }
-      this.gameOver = true;
-      calcHeuristic();
-    }
-    AiLogic.calculatedStates.put(this.hashCode(), this);
   }
 
   /** calculate Heuristic. */
