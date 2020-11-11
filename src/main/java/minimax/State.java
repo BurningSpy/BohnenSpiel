@@ -84,9 +84,6 @@ public class State {
         break;
       }
     }
-    if (this.redPoints + this.bluePoints > 72) {
-      System.out.println("WTF");
-    }
     calcHeuristic();
   }
 
