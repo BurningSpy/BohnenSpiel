@@ -13,6 +13,8 @@ public class State {
   double heuristic;
   boolean redsTurn;
   boolean gameOver;
+  int winsRed;
+  int winsBlue;
   State prev;
   LinkedList<State> children = new LinkedList<>();
 

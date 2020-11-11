@@ -100,7 +100,7 @@ public class Main {
       end = 6;
     }
     AiLogic.isRed = (offset == 0) ? true : false;
-    State currentState = new State();
+    State currentState;
 
     while (true) {
       Thread.sleep(50);
@@ -112,29 +112,17 @@ public class Main {
           updateBoard(board, selectedField);
           System.out.println("Gegner waehlte: " + moveState + " /\t" + p1 + " - " + p2);
           System.out.println(printBoard(board) + "\n");
-          for (State s : currentState.children) {
-            if (selectedField == s.turn) {
-              currentState = s;
-              break;
-            }
-          }
         }
         // calculate fieldID
         // System.out.println("Finde Zahl: ");
-        if (currentState.children.size() == 0) {
-          currentState.field = Arrays.copyOf(board, 12);
-          currentState.redPoints = p1;
-          currentState.bluePoints = p2;
-        }
+        currentState = new State();
+        currentState.field = Arrays.copyOf(board, 12);
+        currentState.redPoints = p1;
+        currentState.bluePoints = p2;
+
         int selectField;
         do {
           selectField = AiLogic.chooseTurn(currentState);
-          for (State s : currentState.children) {
-            if (selectField == s.turn) {
-              currentState = s;
-              break;
-            }
-          }
           // System.out.println("\t-> " + selectField );
         } while (board[selectField] == 0);
 
