@@ -1,3 +1,5 @@
+package minimax;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 
@@ -228,17 +230,5 @@ public class State {
       result += this.field[i] << 2 * i + 5;
     }
     return result;
-  }
-
-  public static void main(String[] args) {
-    State s = new State();
-    s.field = new int[] {0, 0, 0, 0, 0, 3, 5, 5, 1, 3, 15, 0};
-    s.redPoints = 34;
-    s.bluePoints = 16;
-    s.start = 0;
-    s.end = 5;
-    s.redsTurn = true;
-    s.gameOver = false;
-    s.expand();
   }
 }
