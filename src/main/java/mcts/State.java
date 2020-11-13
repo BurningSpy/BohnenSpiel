@@ -127,18 +127,19 @@ public class State {
 
   /** calculate Heuristic. */
   public void calcHeuristic() {
-    if (gameOver) {
-      if (this.bluePoints > this.redPoints) {
-        this.heuristic = AiLogic.isRed ? -1000 : 1000;
-        return;
-      } else if (this.redPoints > this.bluePoints) {
-        this.heuristic = AiLogic.isRed ? 1000 : -1000;
-        return;
-      } else {
-        this.heuristic = 0;
-        return;
-      }
+    // if (gameOver) {
+    if (this.bluePoints > this.redPoints) {
+      this.heuristic = AiLogic.isRed ? -1000 : 1000;
+      return;
+    } else if (this.redPoints > this.bluePoints) {
+      this.heuristic = AiLogic.isRed ? 1000 : -1000;
+      return;
     }
+    //else {
+    //  this.heuristic = 0;
+    //  return;
+    //}
+   // }
     if (AiLogic.isRed) {
       this.heuristic = (this.bluePoints - this.redPoints);
     } else {
