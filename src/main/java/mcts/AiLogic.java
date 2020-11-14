@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public class AiLogic {
   // change values here to make AI better-slower/worse-faster
   static int maxDepth = 100;
-  static double varianceFactor = 0.1;
+  static double varianceFactor = 0.4;
   static double oddBeansFactor = 1;
   static double cValue = Math.sqrt(2);
 
@@ -42,7 +42,7 @@ public class AiLogic {
       int result = simulation(newState);
       backPropagation(result, newState);
     }
-    return pickWinner(state);
+    return pickWinnerByPercentage(state);
   }
 
   /**
@@ -133,7 +133,13 @@ public class AiLogic {
         return 0;
       } else if (help.depth >= maxDepth) {
         help.calcHeuristic();
-        return (help.heuristic > 0 ? 1 : help.heuristic == 0 ? 0 : -1);
+        if(help.redPoints > help.bluePoints && isRed || help.redPoints < help.bluePoints && !isRed){
+          return 1;
+        } else if (help.bluePoints > help.redPoints && isRed || help.redPoints > help.bluePoints && !isRed){
+          return -1;
+        }else {
+          return 0;
+        }
       }
       LinkedList<Integer> possibleMoves = new LinkedList<>();
       for (int i = help.start; i <= help.end; i++) {
@@ -180,6 +186,20 @@ public class AiLogic {
       int playedGamesAtNode = state.children.get(i).winsBlue + state.children.get(i).winsRed;
       if (playedGamesAtNode > max) {
         max = playedGamesAtNode;
+        winner = state.children.get(i).turn;
+      }
+    }
+    return winner;
+  }
+  public static int pickWinnerByPercentage(State state) {
+    double winPercent = 0;
+    int winner = 0;
+    for (int i = 0; i < state.children.size(); i++) {
+      State child = state.children.get(i);
+      double redPercentage = child.winsRed / (child.winsRed + child.winsBlue);
+      double currentPercent = (isRed) ? redPercentage : (1-redPercentage);
+      if (currentPercent > winPercent) {
+        winPercent = currentPercent;
         winner = state.children.get(i).turn;
       }
     }

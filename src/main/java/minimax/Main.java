@@ -16,7 +16,7 @@ public class Main {
     wenn diese eine bestimmte Stufe der Selbsterkenntnis erreicht hat.
     Im modernen Zeitalter wird dieser Ausdruck in Korea für bemerkenswerte Leistungen verwendet[...]
   */
-  static String name = "Mr. Mini Anderson";
+  static String name = "InsertBeanPun";
 
   static int p1 = 0; // Rot
   static int p2 = 0; // Blau
@@ -52,7 +52,7 @@ public class Main {
 
     url = server + "/api/check/" + gameId + "/" + name;
     while (true) {
-      Thread.sleep(3000);
+      Thread.sleep(300);
       String state = load(url);
       System.out.print("." + " (" + state + ")");
       if (state.equals("0") || state.equals("-1")) {

@@ -7,14 +7,14 @@ import java.util.LinkedList;
 
 public class AiLogic {
   // change values here to make AI better-slower/worse-faster
-  static int laterRoundsDepth = 12;
+  static int laterRoundsDepth = 13;
   static int firstRoundDepth = 10;
   static int dfsDepth = 13;
-  static int depthToSortTo = 6;
+  static int depthToSortTo = 9;
 
   static double varianceFactor = 0.4;
   static double oddBeansFactor = 1;
-  static int msToKeepCalculating = 2600;
+  static int msToKeepCalculating = 2500;
 
   // Don't change anything here
   static boolean firstRound = true;

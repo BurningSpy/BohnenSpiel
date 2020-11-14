@@ -52,7 +52,7 @@ public class Main {
 
     url = server + "/api/check/" + gameId + "/" + name;
     while (true) {
-      Thread.sleep(3000);
+      Thread.sleep(300);
       String state = load(url);
       System.out.print("." + " (" + state + ")");
       if (state.equals("0") || state.equals("-1")) {

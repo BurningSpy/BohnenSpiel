@@ -171,10 +171,10 @@ public class State {
       capturedbeans = 0;
     }
 
-    if (AiLogic.isRed && redsTurn || !AiLogic.isRed && !redsTurn) {
-      this.heuristic -= AiLogic.oddBeansFactor * max;
-    } else {
+    if (AiLogic.isRed == redsTurn) {
       this.heuristic += AiLogic.oddBeansFactor * max;
+    } else {
+      this.heuristic -= AiLogic.oddBeansFactor * max;
     }
 
     /* - quadratische Varianz der Bohnen in eigenen Feldern nach Zug */
