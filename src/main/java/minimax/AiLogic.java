@@ -47,8 +47,8 @@ public class AiLogic {
 
     for (State child : state.children) {
       if (child.turn == bestTurn) {
-        sortSomeStates(state);
-        keepExpanding(state);
+        sortSomeStates(child);
+        keepExpanding(child);
         break;
       }
     }
