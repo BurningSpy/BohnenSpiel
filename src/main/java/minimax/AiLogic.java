@@ -31,6 +31,7 @@ public class AiLogic {
    */
   public static int chooseTurn(State state) {
     bestTurn = 0;
+    state.prev = null;
     start = new Date().getTime();
     if (firstRound) {
       maxDepth = firstRoundDepth;
