@@ -123,7 +123,14 @@ public class Main {
         int selectField;
         do {
           selectField = AiLogic.chooseTurn(currentState);
-          System.out.println("Confidence level " + ((AiLogic.isRed) ? "red" : "blue") + " -> " + ((double) ((AiLogic.isRed) ? currentState.winsRed : currentState.winsBlue) / (double)(currentState.winsRed + currentState.winsBlue))*100+ "%" );
+          System.out.println(
+              "Confidence level "
+                  + ((AiLogic.isRed) ? "red" : "blue")
+                  + " -> "
+                  + ((double) ((AiLogic.isRed) ? currentState.winsRed : currentState.winsBlue)
+                          / (double) (currentState.winsRed + currentState.winsBlue))
+                      * 100
+                  + "%");
         } while (board[selectField] == 0);
 
         updateBoard(board, selectField);

@@ -74,14 +74,14 @@ public class State {
     // if no moves available give points to enemy
     this.turn = move;
     boolean fieldEmtpy = true;
-    for(int i = start; i <= end; i++){
-      if(this.field[i] != 0){
+    for (int i = start; i <= end; i++) {
+      if (this.field[i] != 0) {
         fieldEmtpy = false;
       }
     }
-    if(fieldEmtpy){
+    if (fieldEmtpy) {
       for (int i = start; i <= end; i++) {
-        if(redsTurn){
+        if (redsTurn) {
           bluePoints += this.field[i];
         } else {
           redPoints += this.field[i];
@@ -116,7 +116,8 @@ public class State {
     setMaxChildren();
   }
 
-  public void setMaxChildren(){
+  /** calculates how many children a state can possibly have. */
+  public void setMaxChildren() {
     this.possibleChildren = 0;
     for (int i = this.start; i <= this.end; i++) {
       if (this.field[i] != 0) {
@@ -135,11 +136,11 @@ public class State {
       this.heuristic = AiLogic.isRed ? 1000 : -1000;
       return;
     }
-    //else {
+    // else {
     //  this.heuristic = 0;
     //  return;
-    //}
-   // }
+    // }
+    // }
     if (AiLogic.isRed) {
       this.heuristic = (this.bluePoints - this.redPoints);
     } else {

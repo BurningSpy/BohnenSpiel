@@ -24,15 +24,13 @@ public class AiLogic {
   public static int chooseTurn(State state) {
     start = new Date();
     bestTurn = monteCarlo(state);
-    // System.out.println("Enscheidung fuer Zug: " + bestTurn);
-    System.out.println("Zeit fuer Zug: " + (new Date().getTime() - start.getTime()) + "ms");
-    // System.out.println("Anzahl Kinder: " + state.children.size());
-    // System.out.println("Wert des \"besten\"Zuges: " + heuristic);
+    System.out.println("Time for turn: " + (new Date().getTime() - start.getTime()) + "ms");
+
     return bestTurn;
   }
 
   /**
-   * calculates the monte carlo tree search algorithm
+   * calculates the monte carlo tree search algorithm.
    *
    * @param state given state to determine best turn from
    * @return best turn to play
@@ -47,6 +45,12 @@ public class AiLogic {
     return pickWinner(state);
   }
 
+  /**
+   * selects which state to to expand next.
+   *
+   * @param state the root state from which we start our calculations
+   * @return the state is going to be expanded next
+   */
   public static State selection(State state) {
     if (state.children.size() < state.possibleChildren) {
       return state;
@@ -67,7 +71,7 @@ public class AiLogic {
         }
         i++;
       }
-      if(selectedState.children.size()>0){
+      if (selectedState.children.size() > 0) {
         selectedState = selectedState.children.get(bestKid);
       } else {
         break;
@@ -76,6 +80,12 @@ public class AiLogic {
     return selectedState;
   }
 
+  /**
+   * expands the given state.
+   *
+   * @param state the state to expand
+   * @return the expanded state
+   */
   public static State expansion(State state) {
     if (state.children.size() == state.possibleChildren) {
       return state;
@@ -96,6 +106,12 @@ public class AiLogic {
     return newChild;
   }
 
+  /**
+   * simulates a game from the given state.
+   *
+   * @param state the state from which to simulate from
+   * @return +1 if won, -1 if loss and 0 if draw
+   */
   public static int simulation(State state) {
     if (state.possibleChildren == 0) {
       state.calcHeuristic();
@@ -135,6 +151,12 @@ public class AiLogic {
     }
   }
 
+  /**
+   * propagates the result of the simulation back to the root.
+   *
+   * @param result +1 if won, -1 if loss and 0 if draw
+   * @param state the state from where the back propagation starts
+   */
   public static void backPropagation(int result, State state) {
     boolean redWin = isRed && result == 1 || !isRed && result == -1 || result == 0;
     boolean blueWin = isRed && result == -1 || !isRed && result == 1 || result == 0;
@@ -145,6 +167,12 @@ public class AiLogic {
     } while (state != null);
   }
 
+  /**
+   * chooses the best turn to play depending on the amount of games at each state.
+   *
+   * @param state the root node from where we pick the best turn
+   * @return number of field to play
+   */
   public static int pickWinner(State state) {
     double max = 0;
     int winner = 0;
