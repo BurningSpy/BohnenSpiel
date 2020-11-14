@@ -1,5 +1,6 @@
 package minimax;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,6 +10,7 @@ public class AiLogic {
   static int laterRoundsDepth = 12;
   static int firstRoundDepth = 10;
   static int dfsDepth = 13;
+  static int depthToSortTo = 6;
 
   static double varianceFactor = 0.4;
   static double oddBeansFactor = 1;
@@ -43,33 +45,16 @@ public class AiLogic {
 
     System.out.println("Time for picking turn: " + (new Date().getTime() - start) + "ms");
 
-    keepExpanding(state);
+    for (State child : state.children) {
+      if (child.turn == bestTurn) {
+        sortSomeStates(state);
+        keepExpanding(state);
+        break;
+      }
+    }
 
     System.out.println("Time after more expanding: " + (new Date().getTime() - start) + "ms");
     return bestTurn;
-  }
-
-  /**
-   * method used to keep expanding after we figured out what turn to play. this will make us be able
-   * to utilize our time better and calculate overall more states, because the first turn usually is
-   * the one with the most cost as we have not seen any states at that point, but in later states we
-   * would otherwise waste precious calculation time on our turn.
-   *
-   * @param state the state to expand
-   */
-  public static void keepExpanding(State state) {
-    if (!state.gameOver && state.children.size() == 0) {
-      state.expand();
-    }
-    if (state.depth <= dfsDepth) {
-      for (State child : state.children) {
-        dfs.push(child);
-        // check to see if we still have time left before we need to send our turn to the server
-        if (new Date().getTime() - start < msToKeepCalculating) {
-          keepExpanding(dfs.removeFirst());
-        }
-      }
-    }
   }
 
   /**
@@ -132,5 +117,47 @@ public class AiLogic {
       }
     }
     return (int) bestValue;
+  }
+
+  /**
+   * method used to keep expanding after we figured out what turn to play. this will make us be able
+   * to utilize our time better and calculate overall more states, because the first turn usually is
+   * the one with the most cost as we have not seen any states at that point, but in later states we
+   * would otherwise waste precious calculation time on our turn.
+   *
+   * @param state the state to expand
+   */
+  public static void keepExpanding(State state) {
+    if (!state.gameOver && state.children.size() == 0) {
+      state.expand();
+    }
+    if (state.depth <= dfsDepth) {
+      for (State child : state.children) {
+        dfs.push(child);
+        // check to see if we still have time left before we need to send our turn to the server
+        if (new Date().getTime() - start < msToKeepCalculating) {
+          keepExpanding(dfs.removeFirst());
+        }
+      }
+    }
+  }
+
+  /**
+   * sorts the first few depths after we picked a turn. this should make pruning better the next
+   * time we have to do minimax
+   *
+   * @param state the state from which to sort the children from
+   */
+  public static void sortSomeStates(State state) {
+    if (state.children.size() > 0 && state.depth < depthToSortTo) {
+      if (state.redsTurn == AiLogic.isRed) {
+        state.children.sort(Collections.reverseOrder());
+      } else {
+        Collections.sort(state.children);
+      }
+      for (State child : state.children) {
+        sortSomeStates(child);
+      }
+    }
   }
 }
