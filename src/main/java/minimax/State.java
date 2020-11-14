@@ -10,6 +10,7 @@ public class State {
   int turn;
   int start;
   int end;
+  int depth;
   double heuristic;
   boolean redsTurn;
   boolean gameOver;
@@ -23,7 +24,7 @@ public class State {
     this.bluePoints = this.redPoints = 0;
     this.redsTurn = AiLogic.isRed;
     this.gameOver = false;
-
+    this.depth = 0;
     // determine iteration starting points
     if (this.redsTurn) {
       start = 0;
@@ -46,6 +47,7 @@ public class State {
     this.redsTurn = !state.redsTurn;
     this.heuristic = state.heuristic;
     this.prev = state;
+    this.depth = state.depth + 1;
     this.gameOver = state.gameOver;
     // determine iteration starting point
     this.start = (state.start == 0) ? 6 : 0;
@@ -186,9 +188,9 @@ public class State {
       capturedBeans = 0;
     }
     if (AiLogic.isRed && redsTurn || !AiLogic.isRed && !redsTurn) {
-      this.heuristic -= AiLogic.oddBeansFactor * max;
-    } else {
       this.heuristic += AiLogic.oddBeansFactor * max;
+    } else {
+      this.heuristic -= AiLogic.oddBeansFactor * max;
     }
 
     /* - squared variance of own fields after turn */

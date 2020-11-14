@@ -2,17 +2,26 @@ package minimax;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class AiLogic {
   // change values here to make AI better-slower/worse-faster
-  static int maxDepth = 11;
-  static double varianceFactor = 0.1;
+  static boolean firstRound = true;
+  static int laterRoundsDepth = 12;
+  static int firstRoundDepth = 10;
+  static int dfsDepth = 13;
+
+  static double varianceFactor = 0.4;
   static double oddBeansFactor = 1;
+  static int msToKeepCalculating = 2600;
 
   // Don't change anything here
   static int bestTurn;
   static HashMap<Integer, State> calculatedStates = new HashMap<>();
   static boolean isRed;
+  static int maxDepth;
+  static LinkedList<State> dfs = new LinkedList<>();
+  static long start;
 
   /**
    * calls the minimax function to determine the best move.
@@ -22,14 +31,44 @@ public class AiLogic {
    */
   public static int chooseTurn(State state) {
     bestTurn = 0;
-    Date start = new Date();
+    start = new Date().getTime();
+    if (firstRound) {
+      maxDepth = firstRoundDepth;
+      firstRound = false;
+    } else {
+      maxDepth = laterRoundsDepth;
+    }
     minimax(state, 0, Double.NEGATIVE_INFINITY, Double.POSITIVE_INFINITY);
-    // System.out.println("Deciding on turn: " + bestTurn);
-    System.out.println("Time for turn: " + (new Date().getTime() - start.getTime()) + "ms");
-    // System.out.println("Amount of children: " + state.children.size());
-    // System.out.println("Value of best turn: " + heuristic);
 
+    System.out.println("Time for picking turn: " + (new Date().getTime() - start) + "ms");
+
+    keepExpanding(state);
+
+    System.out.println("Time after more expanding: " + (new Date().getTime() - start) + "ms");
     return bestTurn;
+  }
+
+  /**
+   * method used to keep expanding after we figured out what turn to play. this will make us be able
+   * to utilize our time better and calculate overall more states, because the first turn usually is
+   * the one with the most cost as we have not seen any states at that point, but in later states we
+   * would otherwise waste precious calculation time on our turn.
+   *
+   * @param state the state to expand
+   */
+  public static void keepExpanding(State state) {
+    if (!state.gameOver && state.children.size() == 0) {
+      state.expand();
+    }
+    if (state.depth <= dfsDepth) {
+      for (State child : state.children) {
+        dfs.push(child);
+        // check to see if we still have time left before we need to send our turn to the server
+        if (new Date().getTime() - start < msToKeepCalculating) {
+          keepExpanding(dfs.removeFirst());
+        }
+      }
+    }
   }
 
   /**
@@ -46,24 +85,6 @@ public class AiLogic {
     if (depth >= maxDepth) {
       return state.heuristic;
     }
-
-    /* If state is already known then don't calculate children again
-      This should save time if there are a lot of same states where we calculate
-      the same children
-      Doesn't work correctly so we leave this out for now
-
-       State help = calculatedStates.get(state.hashCode());
-       if (help == null) {
-         state.expand();
-       } else {
-         help.turn = state.turn;
-         help.depth = state.depth;
-         for (int i = 0; i < help.children.size(); i++) {
-           help.children.get(i).depth = help.depth + 1;
-         }
-         state = help;
-       }
-    */
     // only expand if this state hasn't already been expanded before
     if (state.children.size() == 0) {
       state.expand();
@@ -80,7 +101,7 @@ public class AiLogic {
       for (int i = 0; i < state.children.size(); i++) {
         double value = minimax(state.children.get(i), depth + 1, alpha, beta);
 
-        /*if we are on depth 0 we determine which move to do this way
+        /*if we are on depth 0 we determine which move to do this way:
          whatever is the highest value getting back up from the recursion calls
          determines which of the up to 6 moves is the best
          Don't have to do this in the Min-Part because Depth 0 always is for Max-Player
