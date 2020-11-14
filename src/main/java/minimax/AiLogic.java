@@ -6,7 +6,6 @@ import java.util.LinkedList;
 
 public class AiLogic {
   // change values here to make AI better-slower/worse-faster
-  static boolean firstRound = true;
   static int laterRoundsDepth = 12;
   static int firstRoundDepth = 10;
   static int dfsDepth = 13;
@@ -16,6 +15,7 @@ public class AiLogic {
   static int msToKeepCalculating = 2600;
 
   // Don't change anything here
+  static boolean firstRound = true;
   static int bestTurn;
   static HashMap<Integer, State> calculatedStates = new HashMap<>();
   static boolean isRed;

@@ -1,9 +1,10 @@
 package minimax;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 
-public class State {
+public class State implements Comparable<State> {
   int[] field;
   int redPoints;
   int bluePoints;
@@ -91,40 +92,20 @@ public class State {
 
   /** creates all children nodes of the state instance. */
   public void expand() {
-    LinkedList<State> possibleStates = new LinkedList<>();
-
     // iterate over all of one player's possible moves
     for (int i = this.start; i <= this.end; i++) {
       if (this.field[i] != 0) {
         State nextState = new State(this); //
         nextState.doMove(i);
         nextState.turn = i;
-        boolean added = false;
-        if (redsTurn) {
-          for (int j = 0; j < possibleStates.size(); j++) {
-            State s2 = possibleStates.get(j);
-            if (s2.heuristic > nextState.heuristic) {
-              possibleStates.add(j, nextState);
-              added = true;
-              break;
-            }
-          }
-        } else {
-          for (int j = 0; j < possibleStates.size(); j++) {
-            State s2 = possibleStates.get(j);
-            if (s2.heuristic < nextState.heuristic) {
-              possibleStates.add(j, nextState);
-              added = true;
-              break;
-            }
-          }
-        }
-        if (!added) {
-          possibleStates.add(nextState);
-        }
+        this.children.add(nextState);
       }
     }
-    this.children = possibleStates;
+    if (this.redsTurn == AiLogic.isRed) {
+      this.children.sort(Collections.reverseOrder());
+    } else {
+      Collections.sort(this.children);
+    }
     // If no possible turns left, give points to other player
     if (this.children.size() == 0) {
       for (int i = (this.start == 0) ? 6 : 0; i <= ((this.end == 5) ? 11 : 5); i++) {
@@ -187,7 +168,7 @@ public class State {
       }
       capturedBeans = 0;
     }
-    if (AiLogic.isRed && redsTurn || !AiLogic.isRed && !redsTurn) {
+    if (AiLogic.isRed == this.redsTurn) {
       this.heuristic += AiLogic.oddBeansFactor * max;
     } else {
       this.heuristic -= AiLogic.oddBeansFactor * max;
@@ -230,5 +211,10 @@ public class State {
       result += this.field[i] << 2 * i + 5;
     }
     return result;
+  }
+
+  @Override
+  public int compareTo(State state) {
+    return Double.compare(this.heuristic, state.heuristic);
   }
 }
