@@ -2,7 +2,6 @@ package minimax;
 
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 
 public class AiLogic {
@@ -19,7 +18,6 @@ public class AiLogic {
   // Don't change anything here
   static boolean firstRound = true;
   static int bestTurn;
-  static HashMap<Integer, State> calculatedStates = new HashMap<>();
   static boolean isRed;
   static int maxDepth;
   static LinkedList<State> dfs = new LinkedList<>();
@@ -33,7 +31,6 @@ public class AiLogic {
    */
   public static int chooseTurn(State state) {
     bestTurn = 0;
-    state.prev = null;
     start = new Date().getTime();
     if (firstRound) {
       maxDepth = firstRoundDepth;
@@ -49,10 +46,10 @@ public class AiLogic {
       if (child.turn == bestTurn) {
         sortSomeStates(child);
         keepExpanding(child);
+        dfs = new LinkedList<>();
         break;
       }
     }
-
     System.out.println("Time after more expanding: " + (new Date().getTime() - start) + "ms");
     return bestTurn;
   }

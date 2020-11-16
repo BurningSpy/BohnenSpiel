@@ -15,7 +15,6 @@ public class State implements Comparable<State> {
   double heuristic;
   boolean redsTurn;
   boolean gameOver;
-  State prev;
   LinkedList<State> children = new LinkedList<>();
 
   /** initializes the very first game State. */
@@ -47,7 +46,6 @@ public class State implements Comparable<State> {
     this.redPoints = state.redPoints;
     this.redsTurn = !state.redsTurn;
     this.heuristic = state.heuristic;
-    this.prev = state;
     this.depth = state.depth + 1;
     this.gameOver = state.gameOver;
     // determine iteration starting point
@@ -118,7 +116,6 @@ public class State implements Comparable<State> {
       this.gameOver = true;
       calcHeuristic();
     }
-    AiLogic.calculatedStates.put(this.hashCode(), this);
   }
 
   /** calculate Heuristic. */

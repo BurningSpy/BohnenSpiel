@@ -133,11 +133,13 @@ public class AiLogic {
         return 0;
       } else if (help.depth >= maxDepth) {
         help.calcHeuristic();
-        if(help.redPoints > help.bluePoints && isRed || help.redPoints < help.bluePoints && !isRed){
+        if (help.redPoints > help.bluePoints && isRed
+            || help.redPoints < help.bluePoints && !isRed) {
           return 1;
-        } else if (help.bluePoints > help.redPoints && isRed || help.redPoints > help.bluePoints && !isRed){
+        } else if (help.bluePoints > help.redPoints && isRed
+            || help.redPoints > help.bluePoints && !isRed) {
           return -1;
-        }else {
+        } else {
           return 0;
         }
       }
@@ -191,13 +193,20 @@ public class AiLogic {
     }
     return winner;
   }
+
+  /**
+   * chooses winner based on win percentage.
+   *
+   * @param state the root node from where we pick the best turn
+   * @return number of field to play
+   */
   public static int pickWinnerByPercentage(State state) {
     double winPercent = 0;
     int winner = 0;
     for (int i = 0; i < state.children.size(); i++) {
       State child = state.children.get(i);
       double redPercentage = child.winsRed / (child.winsRed + child.winsBlue);
-      double currentPercent = (isRed) ? redPercentage : (1-redPercentage);
+      double currentPercent = (isRed) ? redPercentage : (1 - redPercentage);
       if (currentPercent > winPercent) {
         winPercent = currentPercent;
         winner = state.children.get(i).turn;
